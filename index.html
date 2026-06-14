@@ -176,13 +176,33 @@
        MOBILE  (≤ 860px)
        ════════════════════════════════════════ */
     @media (max-width: 860px) {
+      /* ── ลบ background image บน mobile ── */
+      body {
+        background-image: none !important;
+        background-color: #050d24 !important;
+      }
+
+      /* ── screenHome: gradient เต็มจอแทน background image ── */
+      #screenHome {
+        background: linear-gradient(160deg,
+          #060e28 0%, #0c1d52 28%, #1a3a9f 58%, #1d64d8 82%, #2980b9 100%) !important;
+        min-height: 100vh !important;
+        min-height: 100dvh !important;
+      }
+
+      /* ── hero overlay: เบาลงบน mobile เพราะมี gradient แล้ว ── */
+      #screenHome .hero-overlay {
+        background: linear-gradient(180deg,
+          rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.05) 100%) !important;
+      }
+
       /* Card radius */
       .wcard { border-radius: 16px; }
 
       /* Hero nav bar */
       .nav-bar { padding: 14px 18px !important; }
 
-      /* ซ่อน banner ที่ปูเต็มจอ → ใช้ body background แทน */
+      /* ซ่อน banner ที่ปูเต็มจอ */
       .hero-bg-img { display: none !important; }
 
       /* ซ่อน right-column image (desktop) */
@@ -226,18 +246,21 @@
     }
 
     /* ── JS is-mobile failsafe ── */
-    body.is-mobile .nav-bar       { padding: 14px 18px !important; }
-    body.is-mobile .hero-bg-img   { display: none !important; }
-    body.is-mobile .hero-img      { display: none !important; }
-    body.is-mobile .hero-img-mob  { display: block !important; }
-    body.is-mobile .hero-inner    { flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 0 !important; }
-    body.is-mobile .hero-center   { padding: 20px 20px 28px !important; }
-    body.is-mobile .hero-h1       { font-size: 1.75rem !important; }
-    body.is-mobile .hero-btns     { flex-direction: column !important; align-items: center !important; width: 100% !important; }
-    body.is-mobile .hero-btns .btn { min-width: 0 !important; max-width: 320px !important; width: 100% !important; }
-    body.is-mobile .mood-icon     { font-size: 1.45rem; }
-    body.is-mobile .mood-lbl      { font-size: 0.55rem; }
-    body.is-mobile .wcard         { border-radius: 16px; }
+    body.is-mobile                     { background-image: none !important; background-color: #050d24 !important; }
+    body.is-mobile #screenHome         { background: linear-gradient(160deg, #060e28 0%, #0c1d52 28%, #1a3a9f 58%, #1d64d8 82%, #2980b9 100%) !important; min-height: 100vh !important; min-height: 100dvh !important; }
+    body.is-mobile #screenHome .hero-overlay { background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.05) 100%) !important; }
+    body.is-mobile .nav-bar            { padding: 14px 18px !important; }
+    body.is-mobile .hero-bg-img        { display: none !important; }
+    body.is-mobile .hero-img           { display: none !important; }
+    body.is-mobile .hero-img-mob       { display: block !important; }
+    body.is-mobile .hero-inner         { flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 0 !important; }
+    body.is-mobile .hero-center        { padding: 20px 20px 28px !important; }
+    body.is-mobile .hero-h1            { font-size: 1.75rem !important; }
+    body.is-mobile .hero-btns          { flex-direction: column !important; align-items: center !important; width: 100% !important; }
+    body.is-mobile .hero-btns .btn     { min-width: 0 !important; max-width: 320px !important; width: 100% !important; }
+    body.is-mobile .mood-icon          { font-size: 1.45rem; }
+    body.is-mobile .mood-lbl           { font-size: 0.55rem; }
+    body.is-mobile .wcard              { border-radius: 16px; }
   </style>
 </head>
 <body>
