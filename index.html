@@ -182,10 +182,16 @@
       /* Hero nav bar */
       .nav-bar { padding: 14px 18px !important; }
 
-      /* Hero image (right column) — hide on mobile, bg fills screen */
+      /* ซ่อน banner ที่ปูเต็มจอ → ใช้ body background แทน */
+      .hero-bg-img { display: none !important; }
+
+      /* ซ่อน right-column image (desktop) */
       .hero-img { display: none !important; }
 
-      /* Hero inner — center single column */
+      /* แสดง banner แบบ inline บนมือถือ */
+      .hero-img-mob { display: block !important; }
+
+      /* Hero inner — single column */
       .hero-inner {
         flex-direction: column !important;
         align-items: center !important;
@@ -199,7 +205,7 @@
       /* Hero headline */
       .hero-h1 { font-size: 1.75rem !important; }
 
-      /* Hero buttons — stack vertically, full width */
+      /* Hero buttons — stack, full width */
       .hero-btns {
         flex-direction: column !important;
         align-items: center !important;
@@ -219,17 +225,19 @@
       .trust-row { gap: 12px !important; }
     }
 
-    /* ── JS is-mobile failsafe (identical rules) ── */
-    body.is-mobile .nav-bar      { padding: 14px 18px !important; }
-    body.is-mobile .hero-img     { display: none !important; }
-    body.is-mobile .hero-inner   { flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 0 !important; }
-    body.is-mobile .hero-center  { padding: 20px 20px 28px !important; }
-    body.is-mobile .hero-h1      { font-size: 1.75rem !important; }
-    body.is-mobile .hero-btns    { flex-direction: column !important; align-items: center !important; width: 100% !important; }
+    /* ── JS is-mobile failsafe ── */
+    body.is-mobile .nav-bar       { padding: 14px 18px !important; }
+    body.is-mobile .hero-bg-img   { display: none !important; }
+    body.is-mobile .hero-img      { display: none !important; }
+    body.is-mobile .hero-img-mob  { display: block !important; }
+    body.is-mobile .hero-inner    { flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 0 !important; }
+    body.is-mobile .hero-center   { padding: 20px 20px 28px !important; }
+    body.is-mobile .hero-h1       { font-size: 1.75rem !important; }
+    body.is-mobile .hero-btns     { flex-direction: column !important; align-items: center !important; width: 100% !important; }
     body.is-mobile .hero-btns .btn { min-width: 0 !important; max-width: 320px !important; width: 100% !important; }
-    body.is-mobile .mood-icon    { font-size: 1.45rem; }
-    body.is-mobile .mood-lbl     { font-size: 0.55rem; }
-    body.is-mobile .wcard        { border-radius: 16px; }
+    body.is-mobile .mood-icon     { font-size: 1.45rem; }
+    body.is-mobile .mood-lbl      { font-size: 0.55rem; }
+    body.is-mobile .wcard         { border-radius: 16px; }
   </style>
 </head>
 <body>
@@ -240,8 +248,9 @@
 <div id="screenHome" class="screen"
      style="display:flex; flex-direction:column; position:relative;">
 
-  <!-- Banner image เต็มจอ -->
-  <img src="https://i.postimg.cc/hGWLp0gk/48D93FC5-BDDD-424C-8F29-482F5EE3E55C.png"
+  <!-- Banner image เต็มจอ (desktop only) -->
+  <img class="hero-bg-img"
+       src="https://i.postimg.cc/hGWLp0gk/48D93FC5-BDDD-424C-8F29-482F5EE3E55C.png"
        alt="" aria-hidden="true" fetchpriority="high"
        style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; display:block;">
 
@@ -281,6 +290,13 @@
           บอกความรู้สึก<br>
           <span style="color:#7dd3fc;">ต่อการเรียนการสอน</span>
         </h1>
+
+        <!-- Mobile-only banner image (แสดงระหว่าง headline กับ subtitle) -->
+        <div class="hero-img-mob" style="display:none; margin:18px auto 20px; max-width:300px; width:100%;">
+          <img src="https://i.postimg.cc/hGWLp0gk/48D93FC5-BDDD-424C-8F29-482F5EE3E55C.png"
+               alt="hero banner โรงเรียนธนาคารออมสิน" loading="lazy"
+               style="width:100%; height:auto; border-radius:16px; box-shadow:0 16px 48px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.2); display:block;">
+        </div>
 
         <p class="fu3" style="color:rgba(255,255,255,0.75); font-size:1rem; line-height:1.7; margin-bottom:36px; max-width:400px; margin-left:auto; margin-right:auto;">
           พูดได้ตรงๆ ไม่มีถูกผิด ครูจะนำความคิดเห็นของคุณไปปรับปรุงการสอนให้ดีขึ้น
