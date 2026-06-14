@@ -4,24 +4,35 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>ความรู้สึกต่อการเรียนการสอน — โรงเรียนธนาคารออมสิน</title>
+
+  <!-- ── Fonts: preconnect ทั้งคู่ + เฉพาะ weight ที่ใช้จริง ── -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700;800&display=swap" rel="stylesheet">
+
+  <!-- ── SweetAlert2 เท่านั้น (ลบ Tailwind CDN ออก ไม่ได้ใช้) ── -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Sarabun', 'Segoe UI', system-ui, sans-serif;
       min-height: 100vh;
-      background: url('https://i.postimg.cc/TYwtBQbC/Chat-GPT-Image-Jun-14-2026-09-27-59-PM.png') center/cover fixed;
+      /* ลบ background-attachment:fixed ออก → iOS Safari render พัง */
+      background: url('https://i.postimg.cc/TYwtBQbC/Chat-GPT-Image-Jun-14-2026-09-27-59-PM.png')
+                  center / cover no-repeat;
       background-color: #0c1a3a;
     }
 
     /* ── Screens ── */
-    .screen { display: none; min-height: 100vh; }
+    .screen {
+      display: none;
+      min-height: 100vh;
+      min-height: 100dvh; /* mobile viewport ไม่รวม address bar */
+    }
 
-    /* ── White card (forms) ── */
+    /* ── White card ── */
     .wcard {
       background: rgba(255,255,255,0.97);
       backdrop-filter: blur(24px);
@@ -31,23 +42,17 @@
       box-shadow: 0 24px 64px rgba(10,30,80,0.22), 0 4px 16px rgba(29,78,216,0.1);
     }
 
-    /* ── Glass card (hero widgets) ── */
-    .bglass {
-      background: rgba(255,255,255,0.13);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255,255,255,0.28);
-      border-radius: 16px;
-    }
-
     /* ── Hero overlay ── */
     .hero-overlay {
       position: absolute; inset: 0;
-      background: linear-gradient(135deg, rgba(10,25,75,0.78) 0%, rgba(29,78,216,0.60) 55%, rgba(14,165,233,0.48) 100%);
+      background: linear-gradient(135deg,
+        rgba(10,25,75,0.78)   0%,
+        rgba(29,78,216,0.60) 55%,
+        rgba(14,165,233,0.48) 100%);
       z-index: 0;
     }
 
-    /* ── Inputs (light) ── */
+    /* ── Inputs ── */
     .f-input {
       width: 100%; background: #f0f7ff;
       border: 1.5px solid #bfdbfe; border-radius: 10px;
@@ -85,12 +90,9 @@
     .btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.22); }
     .btn:active:not(:disabled) { transform: translateY(-1px); }
     .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .btn-blue  { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
-    .btn-sky   { background: linear-gradient(135deg, #0ea5e9, #0284c7); color: white; }
-    .btn-white { background: rgba(255,255,255,0.92); color: #1e40af; border: 1.5px solid rgba(255,255,255,0.7); }
+    .btn-blue      { background: linear-gradient(135deg, #3b82f6, #1d4ed8); color: white; }
     .btn-outline-w { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.65); }
     .btn-outline-w:hover { background: rgba(255,255,255,0.14); }
-
     .btn-ghost-dk {
       background: #eff6ff; color: #1e40af;
       border: 1.5px solid #bfdbfe; border-radius: 10px;
@@ -106,7 +108,7 @@
     }
     .btn-ghost-lt:hover { background: rgba(255,255,255,0.24); }
 
-    /* ── Stats chip ── */
+    /* ── Chips ── */
     .chip {
       display: inline-flex; align-items: center; gap: 5px;
       background: #eff6ff; border: 1px solid #bfdbfe;
@@ -120,20 +122,15 @@
       border-radius: 12px; padding: 14px 16px;
       margin-bottom: 10px; transition: all 0.2s;
     }
-    .f-card:hover { background: #eff6ff; border-color: #bfdbfe; box-shadow: 0 2px 12px rgba(29,78,216,0.07); }
+    .f-card:hover { background: #eff6ff; border-color: #bfdbfe; }
 
     .tag { display: inline-flex; align-items: center; gap: 5px; border-radius: 20px; padding: 3px 11px; font-size: 0.78rem; font-weight: 600; }
     .tag-subj { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
 
-    /* ── Spinners ── */
+    /* ── Spinner ── */
     .spinner {
       width: 32px; height: 32px;
       border: 3px solid #bfdbfe; border-top-color: #3b82f6;
-      border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;
-    }
-    .spinner-w {
-      width: 32px; height: 32px;
-      border: 3px solid rgba(255,255,255,0.25); border-top-color: white;
       border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
@@ -142,9 +139,8 @@
     .pwd-input {
       background: #f0f7ff; border: 2px solid #bfdbfe; border-radius: 12px;
       padding: 18px; text-align: center; font-size: 2rem;
-      letter-spacing: 12px; color: #0f172a;
-      outline: none; width: 100%; max-width: 220px;
-      font-family: inherit; transition: all 0.2s;
+      letter-spacing: 12px; color: #0f172a; outline: none;
+      width: 100%; max-width: 220px; font-family: inherit; transition: all 0.2s;
     }
     .pwd-input:focus { border-color: #3b82f6; background: white; box-shadow: 0 0 0 3px rgba(59,130,246,0.13); }
     .pwd-input::placeholder { letter-spacing: 3px; font-size: 0.88rem; color: #94a3b8; }
@@ -153,8 +149,7 @@
     .ai-box {
       background: #f0f7ff; border: 1px solid #bfdbfe;
       border-radius: 14px; padding: 20px;
-      color: #0f172a; font-size: 0.9rem; line-height: 1.85;
-      margin-top: 14px;
+      color: #0f172a; font-size: 0.9rem; line-height: 1.85; margin-top: 14px;
     }
 
     /* ── Trust badge ── */
@@ -166,51 +161,99 @@
     /* ── Divider ── */
     .divider { height: 1px; background: #e0f0fe; margin: 18px 0; }
 
-    /* ── Section heading (admin) ── */
+    /* ── Admin section ── */
     .s-title { color: #0f172a; font-size: 1rem; font-weight: 700; margin-bottom: 3px; }
     .s-sub   { color: #64748b; font-size: 0.78rem; }
 
     /* ── Fade animation ── */
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
-    .fu  { animation: fadeUp 0.55s ease both; }
-    .fu2 { animation: fadeUp 0.55s 0.1s ease both; }
-    .fu3 { animation: fadeUp 0.55s 0.2s ease both; }
-    .fu4 { animation: fadeUp 0.55s 0.3s ease both; }
+    .fu  { animation: fadeUp 0.5s ease both; }
+    .fu2 { animation: fadeUp 0.5s 0.08s ease both; }
+    .fu3 { animation: fadeUp 0.5s 0.16s ease both; }
+    .fu4 { animation: fadeUp 0.5s 0.24s ease both; }
 
-    /* ── Mobile ── */
+    /* ════════════════════════════════════════
+       MOBILE  (≤ 860px)
+       ════════════════════════════════════════ */
     @media (max-width: 860px) {
-      .wcard { border-radius: 18px; }
-      .mood-icon { font-size: 1.5rem; }
-      .mood-lbl { font-size: 0.57rem; }
-      .hero-h1 { font-size: 1.8rem !important; }
-      .hero-btns { flex-direction: column !important; }
-      .hero-inner { flex-direction: column !important; gap: 28px !important; }
-      .hero-img   { flex: none !important; width: 100% !important; order: -1; margin: 0 auto; max-width: 360px; }
+      /* Card radius */
+      .wcard { border-radius: 16px; }
+
+      /* Hero nav bar */
+      .nav-bar { padding: 14px 18px !important; }
+
+      /* Hero image (right column) — hide on mobile, bg fills screen */
+      .hero-img { display: none !important; }
+
+      /* Hero inner — center single column */
+      .hero-inner {
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-content: center !important;
+        gap: 0 !important;
+      }
+
+      /* Hero center area */
+      .hero-center { padding: 20px 20px 28px !important; }
+
+      /* Hero headline */
+      .hero-h1 { font-size: 1.75rem !important; }
+
+      /* Hero buttons — stack vertically, full width */
+      .hero-btns {
+        flex-direction: column !important;
+        align-items: center !important;
+        width: 100% !important;
+      }
+      .hero-btns .btn {
+        min-width: 0 !important;
+        max-width: 320px !important;
+        width: 100% !important;
+      }
+
+      /* Mood buttons */
+      .mood-icon { font-size: 1.45rem; }
+      .mood-lbl  { font-size: 0.55rem; }
+
+      /* Trust badges */
+      .trust-row { gap: 12px !important; }
     }
-    body.is-mobile .wcard { border-radius: 18px; }
-    body.is-mobile .mood-icon { font-size: 1.5rem; }
-    body.is-mobile .mood-lbl { font-size: 0.57rem; }
-    body.is-mobile .hero-h1 { font-size: 1.8rem !important; }
-    body.is-mobile .hero-btns { flex-direction: column !important; }
-    body.is-mobile .hero-inner { flex-direction: column !important; gap: 28px !important; }
-    body.is-mobile .hero-img   { flex: none !important; width: 100% !important; order: -1; margin: 0 auto; max-width: 360px; }
+
+    /* ── JS is-mobile failsafe (identical rules) ── */
+    body.is-mobile .nav-bar      { padding: 14px 18px !important; }
+    body.is-mobile .hero-img     { display: none !important; }
+    body.is-mobile .hero-inner   { flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 0 !important; }
+    body.is-mobile .hero-center  { padding: 20px 20px 28px !important; }
+    body.is-mobile .hero-h1      { font-size: 1.75rem !important; }
+    body.is-mobile .hero-btns    { flex-direction: column !important; align-items: center !important; width: 100% !important; }
+    body.is-mobile .hero-btns .btn { min-width: 0 !important; max-width: 320px !important; width: 100% !important; }
+    body.is-mobile .mood-icon    { font-size: 1.45rem; }
+    body.is-mobile .mood-lbl     { font-size: 0.55rem; }
+    body.is-mobile .wcard        { border-radius: 16px; }
   </style>
 </head>
 <body>
 
-<!-- ╔══════════════════════════════════════════════════╗
-     ║  SCREEN 1 : HERO / HOME                        ║
-     ╚══════════════════════════════════════════════════╝ -->
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 1 : HERO / HOME    ║
+     ╚══════════════════════════════╝ -->
 <div id="screenHome" class="screen"
-     style="display:flex; flex-direction:column; position:relative; min-height:100vh;">
+     style="display:flex; flex-direction:column; position:relative;">
 
+  <!-- Banner image เต็มจอ -->
+  <img src="https://i.postimg.cc/hGWLp0gk/48D93FC5-BDDD-424C-8F29-482F5EE3E55C.png"
+       alt="" aria-hidden="true" fetchpriority="high"
+       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; display:block;">
+
+  <!-- Blue overlay -->
   <div class="hero-overlay"></div>
 
-  <!-- Top nav bar -->
-  <div style="position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; padding:20px 32px;">
+  <!-- Nav bar -->
+  <div class="nav-bar" style="position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; padding:20px 32px;">
     <div style="display:flex; align-items:center; gap:12px;">
       <img src="https://i.postimg.cc/ydtX6mMS/logo.png"
            alt="โรงเรียนธนาคารออมสิน"
+           width="44" height="44"
            style="height:44px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3));"
            onerror="this.style.display='none'">
       <div>
@@ -218,16 +261,16 @@
         <div style="color:rgba(255,255,255,0.6); font-size:0.7rem;">Student Feedback System</div>
       </div>
     </div>
-    <div style="background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.28); border-radius:20px; padding:5px 14px; color:rgba(255,255,255,0.85); font-size:0.72rem; font-weight:500;">
+    <div style="background:rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.28); border-radius:20px; padding:5px 14px; color:rgba(255,255,255,0.85); font-size:0.72rem; font-weight:500; white-space:nowrap;">
       🔒 ไม่ระบุตัวตน
     </div>
   </div>
 
-  <!-- Hero center content -->
-  <div style="position:relative; z-index:1; flex:1; display:flex; align-items:center; justify-content:center; padding:32px 40px;">
+  <!-- Hero center -->
+  <div class="hero-center" style="position:relative; z-index:1; flex:1; display:flex; align-items:center; justify-content:center; padding:32px 40px;">
     <div class="hero-inner" style="display:flex; align-items:center; gap:52px; max-width:1000px; width:100%;">
 
-      <!-- ── Left: Text + CTA ── -->
+      <!-- Text + CTA -->
       <div style="flex:1; min-width:0; text-align:center;">
 
         <div class="fu" style="display:inline-flex; align-items:center; gap:8px; background:rgba(59,130,246,0.25); border:1px solid rgba(147,197,253,0.45); border-radius:20px; padding:7px 18px; margin-bottom:24px; color:rgba(255,255,255,0.9); font-size:0.8rem; font-weight:600;">
@@ -239,7 +282,7 @@
           <span style="color:#7dd3fc;">ต่อการเรียนการสอน</span>
         </h1>
 
-        <p class="fu3" style="color:rgba(255,255,255,0.75); font-size:1rem; line-height:1.7; margin-bottom:36px; max-width:380px; margin-left:auto; margin-right:auto;">
+        <p class="fu3" style="color:rgba(255,255,255,0.75); font-size:1rem; line-height:1.7; margin-bottom:36px; max-width:400px; margin-left:auto; margin-right:auto;">
           พูดได้ตรงๆ ไม่มีถูกผิด ครูจะนำความคิดเห็นของคุณไปปรับปรุงการสอนให้ดีขึ้น
         </p>
 
@@ -256,43 +299,42 @@
           </button>
         </div>
 
-        <div class="fu4" style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap;">
+        <div class="fu4 trust-row" style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap;">
           <div class="trust-badge">✅ ไม่บังคับระบุตัวตน</div>
           <div class="trust-badge">🛡️ ข้อมูลปลอดภัย</div>
           <div class="trust-badge">📊 ครูวิเคราะห์ด้วย AI</div>
         </div>
+
       </div>
 
-      <!-- ── Right: Hero banner image ── -->
-      <div class="hero-img fu3" style="flex: 0 0 420px;">
+      <!-- Hero image (desktop only — hidden on mobile via CSS) -->
+      <div class="hero-img fu3" style="flex:0 0 420px;">
         <img src="https://i.postimg.cc/hGWLp0gk/48D93FC5-BDDD-424C-8F29-482F5EE3E55C.png"
              alt="hero banner โรงเรียนธนาคารออมสิน"
-             style="width:100%; height:auto; border-radius:20px;
-                    box-shadow: 0 32px 80px rgba(0,0,0,0.45), 0 8px 24px rgba(0,0,0,0.25);
-                    display:block;"
+             loading="lazy" decoding="async"
+             style="width:100%; height:auto; border-radius:20px; box-shadow:0 32px 80px rgba(0,0,0,0.45), 0 8px 24px rgba(0,0,0,0.25); display:block;"
              onerror="this.parentElement.style.display='none'">
       </div>
 
     </div>
   </div>
 
-  <!-- Footer bar -->
+  <!-- Footer -->
   <div style="position:relative; z-index:1; text-align:center; padding:14px 20px; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2);">
     <p style="color:rgba(255,255,255,0.42); font-size:0.7rem;">
-      ระบบรับความคิดเห็นนักเรียน · โรงเรียนธนาคารออมสิน · พัฒนาด้วย Google Apps Script
+      ระบบรับความคิดเห็นนักเรียน · โรงเรียนธนาคารออมสิน · KRUOAT
     </p>
   </div>
 </div>
 
 
-<!-- ╔══════════════════════════════════════════════════╗
-     ║  SCREEN 2 : STUDENT FORM                       ║
-     ╚══════════════════════════════════════════════════╝ -->
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 2 : STUDENT FORM   ║
+     ╚══════════════════════════════╝ -->
 <div id="screenStudent" class="screen"
-     style="display:none; flex-direction:column; align-items:center; padding:28px 20px;">
+     style="display:none; flex-direction:column; align-items:center; padding:24px 16px;">
 
-  <!-- Step header -->
-  <div style="width:100%; max-width:520px; margin-bottom:16px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+  <div style="width:100%; max-width:520px; margin-bottom:14px; display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
     <button class="btn-ghost-lt" onclick="go('screenHome')">← กลับ</button>
     <div>
       <h2 style="color:white; font-size:1.1rem; font-weight:700; text-shadow:0 1px 4px rgba(0,0,0,0.5);">💬 บอกความรู้สึกของฉัน</h2>
@@ -300,19 +342,17 @@
     </div>
   </div>
 
-  <div class="wcard" style="width:100%; max-width:520px; padding:28px 26px;">
+  <div class="wcard" style="width:100%; max-width:520px; padding:24px 22px;">
 
-    <!-- Subject -->
     <div style="margin-bottom:18px;">
       <label class="field-label">📚 วิชา <span style="font-weight:400; color:#94a3b8;">(ไม่บังคับ)</span></label>
       <input id="inputSubject" type="text" class="f-input"
              placeholder="เช่น ภาษาอังกฤษ, คณิตศาสตร์, ฟิสิกส์..." maxlength="100">
     </div>
 
-    <!-- Mood -->
     <div style="margin-bottom:18px;">
       <label class="field-label">🎭 ความรู้สึกตอนนี้ <span style="font-weight:400; color:#94a3b8;">(ไม่บังคับ)</span></label>
-      <div style="display:flex; gap:8px;">
+      <div style="display:flex; gap:6px;">
         <button class="mood-btn" data-mood="สนุกมาก" onclick="pickMood(this)"><span class="mood-icon">😄</span><span class="mood-lbl">สนุก<br>มาก</span></button>
         <button class="mood-btn" data-mood="โอเค"     onclick="pickMood(this)"><span class="mood-icon">🙂</span><span class="mood-lbl">โอเค</span></button>
         <button class="mood-btn" data-mood="เฉยๆ"    onclick="pickMood(this)"><span class="mood-icon">😐</span><span class="mood-lbl">เฉยๆ</span></button>
@@ -321,8 +361,7 @@
       </div>
     </div>
 
-    <!-- Message -->
-    <div style="margin-bottom:22px;">
+    <div style="margin-bottom:20px;">
       <label class="field-label">✏️ อยากบอกครูอะไร? พิมพ์ได้เลย!</label>
       <textarea id="inputMessage" class="f-input" maxlength="600" oninput="updateCount()"
         placeholder="ไม่มีถูกผิด พิมพ์ได้ทุกอย่างเลยนะ เช่น&#10;· สิ่งที่ชอบในวิชานี้&#10;· อยากให้ครูสอนแบบไหน&#10;· สิ่งที่เข้าใจยาก&#10;· อยากให้เปลี่ยนอะไร&#10;· หรือแค่อยากระบาย 🙏"></textarea>
@@ -334,35 +373,30 @@
 
     <div class="divider"></div>
 
-    <!-- Submit -->
-    <button id="btnSubmit" class="btn btn-blue" onclick="submitFeedback()">
-      📩 ส่งความรู้สึก
-    </button>
+    <button id="btnSubmit" class="btn btn-blue" onclick="submitFeedback()">📩 ส่งความรู้สึก</button>
     <p style="color:#94a3b8; font-size:0.72rem; text-align:center; margin-top:12px;">
       🔒 ครูจะไม่รู้ว่าใครส่ง — ข้อมูลทั้งหมดเป็นแบบนิรนาม
     </p>
   </div>
-  <div style="height:30px;"></div>
+  <div style="height:24px;"></div>
 </div>
 
 
-<!-- ╔══════════════════════════════════════════════════╗
-     ║  SCREEN 3 : ADMIN LOGIN                        ║
-     ╚══════════════════════════════════════════════════╝ -->
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 3 : ADMIN LOGIN    ║
+     ╚══════════════════════════════╝ -->
 <div id="screenAdminLogin" class="screen"
-     style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:28px 20px;">
+     style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:24px 16px;">
 
-  <div class="wcard" style="width:100%; max-width:340px; padding:44px 28px; text-align:center;">
+  <div class="wcard" style="width:100%; max-width:340px; padding:40px 28px; text-align:center;">
     <div style="width:60px; height:60px; background:linear-gradient(135deg,#3b82f6,#1d4ed8); border-radius:16px; display:flex; align-items:center; justify-content:center; font-size:26px; margin:0 auto 18px;">🔐</div>
     <h2 style="color:#0f172a; font-size:1.25rem; font-weight:800; margin-bottom:6px;">เข้าสู่ระบบครู</h2>
     <p style="color:#64748b; font-size:0.85rem; margin-bottom:28px;">กรุณาใส่รหัสผ่านเพื่อดูข้อมูล</p>
-
     <div style="display:flex; justify-content:center; margin-bottom:24px;">
       <input id="adminPwd" type="password" class="pwd-input"
              placeholder="••••" maxlength="10"
              onkeydown="if(event.key==='Enter') verifyAdmin()">
     </div>
-
     <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
       <button class="btn btn-blue" style="max-width:200px;" onclick="verifyAdmin()">เข้าสู่ระบบ</button>
       <button class="btn-ghost-dk" onclick="go('screenHome')">← กลับหน้าแรก</button>
@@ -371,44 +405,41 @@
 </div>
 
 
-<!-- ╔══════════════════════════════════════════════════╗
-     ║  SCREEN 4 : ADMIN DASHBOARD                    ║
-     ╚══════════════════════════════════════════════════╝ -->
+<!-- ╔══════════════════════════════╗
+     ║  SCREEN 4 : ADMIN          ║
+     ╚══════════════════════════════╝ -->
 <div id="screenAdmin" class="screen"
-     style="display:none; padding:22px 16px; min-height:100vh;">
+     style="display:none; padding:20px 14px;">
   <div style="max-width:680px; width:100%; margin:0 auto;">
 
-    <!-- ─ Header card ─ -->
-    <div class="wcard" style="padding:22px 24px; margin-bottom:14px;">
+    <div class="wcard" style="padding:20px 22px; margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
         <div>
           <div style="display:flex; align-items:center; gap:8px; margin-bottom:4px;">
             <div style="width:8px; height:8px; background:#3b82f6; border-radius:50%;"></div>
             <span style="color:#64748b; font-size:0.75rem; font-weight:600; text-transform:uppercase; letter-spacing:0.06em;">Admin Panel</span>
           </div>
-          <h2 class="s-title" style="font-size:1.15rem;">📊 ผลความรู้สึกนักเรียน</h2>
+          <h2 class="s-title" style="font-size:1.1rem;">📊 ผลความรู้สึกนักเรียน</h2>
           <p id="totalLabel" class="s-sub">กำลังโหลด...</p>
         </div>
-        <button class="btn-ghost-dk" style="padding:8px 16px; font-size:0.82rem;" onclick="go('screenHome')">← ออกจากระบบ</button>
+        <button class="btn-ghost-dk" style="padding:8px 14px; font-size:0.82rem;" onclick="go('screenHome')">← ออก</button>
       </div>
-      <!-- Stats -->
-      <div id="statsBar" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;"></div>
+      <div id="statsBar" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;"></div>
     </div>
 
-    <!-- ─ AI Summary card ─ -->
-    <div class="wcard" style="padding:22px 24px; margin-bottom:14px;">
+    <div class="wcard" style="padding:20px 22px; margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
         <div>
           <h3 class="s-title">🤖 สรุปโดย AI</h3>
-          <p class="s-sub">AI วิเคราะห์ประเด็นที่คล้ายกันและให้ข้อเสนอแนะสำหรับครู</p>
+          <p class="s-sub">AI วิเคราะห์ประเด็นที่คล้ายกันและให้ข้อเสนอแนะ</p>
         </div>
         <button id="btnAI" class="btn btn-blue"
-                style="width:auto; padding:10px 20px; font-size:0.85rem; white-space:nowrap; border-radius:10px;"
+                style="width:auto; padding:10px 18px; font-size:0.85rem; white-space:nowrap; border-radius:10px;"
                 onclick="requestAI()">
           ✨ วิเคราะห์ความรู้สึก
         </button>
       </div>
-      <div id="aiLoader" style="display:none; text-align:center; padding:26px 0;">
+      <div id="aiLoader" style="display:none; text-align:center; padding:24px 0;">
         <div class="spinner"></div>
         <p style="color:#64748b; font-size:0.82rem; margin-top:12px;">AI กำลังวิเคราะห์ข้อมูล...</p>
       </div>
@@ -420,12 +451,9 @@
       </div>
     </div>
 
-    <!-- ─ Feedback list card ─ -->
-    <div class="wcard" style="padding:22px 24px; margin-bottom:14px;">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
-        <div>
-          <h3 class="s-title">💬 ความรู้สึกทั้งหมด</h3>
-        </div>
+    <div class="wcard" style="padding:20px 22px; margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+        <h3 class="s-title">💬 ความรู้สึกทั้งหมด</h3>
         <div style="display:flex; gap:8px;">
           <select id="filterMood" class="f-input" style="width:auto; padding:7px 12px; font-size:0.82rem;" onchange="applyFilter()">
             <option value="">🎭 ทุกความรู้สึก</option>
@@ -439,40 +467,41 @@
         </div>
       </div>
       <div id="feedbackList">
-        <div style="text-align:center; padding:34px; color:#94a3b8;">
+        <div style="text-align:center; padding:32px; color:#94a3b8;">
           <div class="spinner"></div>
           <p style="margin-top:12px; font-size:0.88rem;">กำลังโหลดข้อมูล...</p>
         </div>
       </div>
     </div>
 
-    <div style="height:32px;"></div>
+    <div style="height:28px;"></div>
   </div>
 </div>
 
 
-<!-- ════════════════════════════════════════════════════
-     JavaScript
-════════════════════════════════════════════════════ -->
 <script>
 const GAS_URL   = 'https://script.google.com/macros/s/AKfycbyiNJOfOmRQuORmE6j4LrsJqhdFLEc0cAMgWECnkQB2HbVns1o27UmTmx1QLKe3_y21/exec';
 const ADMIN_PWD = '7846';
 
-async function apiGet(params) {
-  const res = await fetch(GAS_URL + '?' + new URLSearchParams(params).toString());
-  if (!res.ok) throw new Error('HTTP ' + res.status);
-  return res.json();
+async function apiGet(p) {
+  const r = await fetch(GAS_URL + '?' + new URLSearchParams(p).toString());
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
 }
 
-/* Mobile */
-(function(){ function c(){ document.body.classList.toggle('is-mobile', window.innerWidth<=860); } c(); window.addEventListener('resize',c); })();
+/* Mobile detection */
+(function(){
+  function c(){ document.body.classList.toggle('is-mobile', window.innerWidth <= 860); }
+  c();
+  window.addEventListener('resize', c);
+})();
 
 /* Navigation */
 const DISP = { screenHome:'flex', screenStudent:'flex', screenAdminLogin:'flex', screenAdmin:'block' };
 function go(id){
   document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
   document.getElementById(id).style.display = DISP[id] || 'flex';
-  window.scrollTo(0,0);
+  window.scrollTo(0, 0);
 }
 
 /* Mood */
@@ -488,18 +517,17 @@ function updateCount(){
   document.getElementById('charCount').textContent = document.getElementById('inputMessage').value.length;
 }
 
-/* Submit feedback */
+/* Submit */
 async function submitFeedback(){
   const message = document.getElementById('inputMessage').value.trim();
   const subject = document.getElementById('inputSubject').value.trim();
-  if(!message){ sw('warning','โอ๊ะ!','กรุณาพิมพ์ความรู้สึกของคุณก่อนนะ 😊'); return; }
-
+  if (!message){ sw('warning','โอ๊ะ!','กรุณาพิมพ์ความรู้สึกของคุณก่อนนะ 😊'); return; }
   const btn = document.getElementById('btnSubmit');
   btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...';
   try {
     const res = await apiGet({ action:'save', subject, mood:selectedMood, message });
     btn.disabled = false; btn.textContent = '📩 ส่งความรู้สึก';
-    if(res && res.success){
+    if (res && res.success){
       await Swal.fire({ icon:'success', title:'ขอบคุณมากเลย! 🙏',
         text:'ครูได้รับความรู้สึกของคุณแล้ว จะนำไปปรับปรุงการสอนต่อไปนะ',
         background:'#fff', color:'#0f172a', confirmButtonColor:'#1d4ed8', confirmButtonText:'กลับหน้าแรก' });
@@ -516,15 +544,14 @@ async function submitFeedback(){
   }
 }
 
-/* Admin login */
+/* Admin */
 function verifyAdmin(){
-  if(document.getElementById('adminPwd').value.trim() === ADMIN_PWD){
+  if (document.getElementById('adminPwd').value.trim() === ADMIN_PWD){
     document.getElementById('adminPwd').value = '';
     go('screenAdmin'); loadAll();
   } else { sw('error','รหัสผ่านไม่ถูกต้อง','กรุณาลองใหม่อีกครั้ง'); }
 }
 
-/* Load feedback */
 let allFeedback = [];
 async function loadAll(){
   set('feedbackList', mkSpin('กำลังโหลดข้อมูล...'));
@@ -533,54 +560,52 @@ async function loadAll(){
   document.getElementById('filterMood').value = '';
   try {
     const res = await apiGet({ action:'getFeedback' });
-    if(res && res.success){ allFeedback = res.data; renderStats(allFeedback); applyFilter(); }
+    if (res && res.success){ allFeedback = res.data; renderStats(allFeedback); applyFilter(); }
     else { set('feedbackList', err2html((res&&res.error)||'ไม่ทราบสาเหตุ')); }
   } catch(e){ set('feedbackList', err2html('ไม่สามารถเชื่อมต่อ GAS ได้')); }
 }
 
 function applyFilter(){
   const m = document.getElementById('filterMood').value;
-  renderFeedback(m ? allFeedback.filter(f=>f.mood===m) : allFeedback);
+  renderFeedback(m ? allFeedback.filter(f => f.mood === m) : allFeedback);
 }
 
-/* Stats */
 function renderStats(data){
   document.getElementById('totalLabel').textContent = 'ข้อมูลทั้งหมด ' + data.length + ' รายการ';
-  if(!data.length){ set('statsBar',''); return; }
+  if (!data.length){ set('statsBar',''); return; }
   const mc = {};
-  data.forEach(f=>{ if(f.mood) mc[f.mood]=(mc[f.mood]||0)+1; });
+  data.forEach(f => { if (f.mood) mc[f.mood] = (mc[f.mood]||0) + 1; });
   const EM = { 'สนุกมาก':'😄','โอเค':'🙂','เฉยๆ':'😐','สับสน':'😕','เครียด':'😢' };
-  let h = '<span class="chip">📋 '+data.length+' รายการ</span>';
-  Object.entries(mc).sort((a,b)=>b[1]-a[1]).forEach(([m,c])=>{ h+='<span class="chip">'+( EM[m]||'•')+' '+m+': '+c+'</span>'; });
+  let h = '<span class="chip">📋 ' + data.length + ' รายการ</span>';
+  Object.entries(mc).sort((a,b) => b[1]-a[1]).forEach(([m,c]) => {
+    h += '<span class="chip">' + (EM[m]||'•') + ' ' + m + ': ' + c + '</span>';
+  });
   set('statsBar', h);
 }
 
-/* Render cards */
 function renderFeedback(data){
-  if(!data.length){ set('feedbackList','<div style="text-align:center;padding:40px;color:#94a3b8;"><div style="font-size:2.5rem;">📭</div><p style="margin-top:12px;font-size:0.88rem;">ไม่มีข้อมูลในหมวดนี้</p></div>'); return; }
-  const MC={
+  if (!data.length){
+    set('feedbackList','<div style="text-align:center;padding:40px;color:#94a3b8;"><div style="font-size:2.5rem;">📭</div><p style="margin-top:12px;font-size:0.88rem;">ไม่มีข้อมูลในหมวดนี้</p></div>');
+    return;
+  }
+  const MC = {
     'สนุกมาก':{bg:'rgba(52,211,153,0.1)',bd:'#6ee7b7',em:'😄'},
-    'โอเค':{bg:'rgba(163,230,53,0.1)',bd:'#bef264',em:'🙂'},
-    'เฉยๆ':{bg:'rgba(251,191,36,0.1)',bd:'#fde68a',em:'😐'},
-    'สับสน':{bg:'rgba(251,146,60,0.1)',bd:'#fed7aa',em:'😕'},
-    'เครียด':{bg:'rgba(244,63,94,0.1)',bd:'#fecdd3',em:'😢'}
+    'โอเค'    :{bg:'rgba(163,230,53,0.1)',bd:'#bef264',em:'🙂'},
+    'เฉยๆ'   :{bg:'rgba(251,191,36,0.1)',bd:'#fde68a',em:'😐'},
+    'สับสน'   :{bg:'rgba(251,146,60,0.1)',bd:'#fed7aa',em:'😕'},
+    'เครียด'  :{bg:'rgba(244,63,94,0.1)', bd:'#fecdd3',em:'😢'}
   };
-  set('feedbackList', data.map(f=>{
-    const c=MC[f.mood]||{};
-    const mTag=f.mood?'<span class="tag" style="background:'+( c.bg||'#eff6ff')+';\
-border:1px solid '+(c.bd||'#bfdbfe')+';color:#0f172a;">'+( c.em||'')+'&nbsp;'+esc(f.mood)+'</span>':'';
-    const sTag=f.subject?'<span class="tag tag-subj">📚 '+esc(f.subject)+'</span>':'';
-    return '<div class="f-card"><div style="display:flex;justify-content:space-between;\
-align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:9px;"><div style="display:flex;\
-gap:6px;flex-wrap:wrap;">'+mTag+sTag+'</div><span style="color:#94a3b8;font-size:0.72rem;\
-white-space:nowrap;">'+esc(f.timestamp)+'</span></div><p style="color:#0f172a;font-size:0.92rem;\
-line-height:1.65;margin:0;">'+esc(f.message)+'</p></div>';
+  set('feedbackList', data.map(f => {
+    const c = MC[f.mood]||{};
+    const mTag = f.mood
+      ? '<span class="tag" style="background:'+(c.bg||'#eff6ff')+';border:1px solid '+(c.bd||'#bfdbfe')+';color:#0f172a;">'+(c.em||'')+'&nbsp;'+esc(f.mood)+'</span>' : '';
+    const sTag = f.subject ? '<span class="tag tag-subj">📚 '+esc(f.subject)+'</span>' : '';
+    return '<div class="f-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:9px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">'+mTag+sTag+'</div><span style="color:#94a3b8;font-size:0.72rem;white-space:nowrap;">'+esc(f.timestamp)+'</span></div><p style="color:#0f172a;font-size:0.92rem;line-height:1.65;margin:0;">'+esc(f.message)+'</p></div>';
   }).join(''));
 }
 
-/* AI Summary */
 async function requestAI(){
-  if(!allFeedback.length){ sw('warning','ไม่มีข้อมูล','ยังไม่มีความรู้สึกนักเรียนเข้ามา'); return; }
+  if (!allFeedback.length){ sw('warning','ไม่มีข้อมูล','ยังไม่มีความรู้สึกนักเรียนเข้ามา'); return; }
   show('aiLoader'); hide('aiResult');
   document.getElementById('btnAI').disabled = true;
   document.getElementById('btnAI').textContent = '⏳ กำลังวิเคราะห์...';
@@ -589,7 +614,7 @@ async function requestAI(){
     hide('aiLoader');
     document.getElementById('btnAI').disabled = false;
     document.getElementById('btnAI').textContent = '✨ วิเคราะห์ความรู้สึก';
-    if(res && res.success){ show('aiResult'); set('aiText', renderMD(res.summary)); }
+    if (res && res.success){ show('aiResult'); set('aiText', renderMD(res.summary)); }
     else { sw('error','ไม่สามารถสรุปได้',(res&&res.error)||'กรุณาลองใหม่'); }
   } catch(e){
     hide('aiLoader');
@@ -599,14 +624,13 @@ async function requestAI(){
   }
 }
 
-/* Helpers */
 function esc(t){ return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>'); }
 function renderMD(t){ return String(t||'').replace(/\*\*(.*?)\*\*/g,'<strong style="color:#1d4ed8;">$1</strong>').replace(/\n/g,'<br>'); }
-function mkSpin(m){ return '<div style="text-align:center;padding:34px;color:#94a3b8;"><div class="spinner"></div><p style="margin-top:12px;font-size:0.88rem;">'+m+'</p></div>'; }
+function mkSpin(m){ return '<div style="text-align:center;padding:32px;color:#94a3b8;"><div class="spinner"></div><p style="margin-top:12px;font-size:0.88rem;">'+m+'</p></div>'; }
 function err2html(m){ return '<p style="color:#ef4444;text-align:center;padding:20px;font-size:0.88rem;">❌ '+esc(m)+'</p>'; }
-function set(id,h){ document.getElementById(id).innerHTML=h; }
-function show(id){ document.getElementById(id).style.display='block'; }
-function hide(id){ document.getElementById(id).style.display='none'; }
+function set(id,h){ document.getElementById(id).innerHTML = h; }
+function show(id){ document.getElementById(id).style.display = 'block'; }
+function hide(id){ document.getElementById(id).style.display = 'none'; }
 function sw(icon,title,text){ return Swal.fire({icon,title,text,background:'#fff',color:'#0f172a',confirmButtonColor:'#1d4ed8'}); }
 </script>
 </body>
