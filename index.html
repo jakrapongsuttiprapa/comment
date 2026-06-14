@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>ความรู้สึกต่อการเรียนการสอน</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 40%, #a855f7 75%, #ec4899 100%);
+      background-attachment: fixed;
+    }
+
+    .screen { display: none; min-height: 100vh; }
+
+    .glass {
+      background: rgba(255,255,255,0.16);
+      backdrop-filter: blur(22px);
+      -webkit-backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.32);
+      border-radius: 22px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+    }
+
+    .f-input {
+      width: 100%;
+      background: rgba(255,255,255,0.16);
+      border: 1.5px solid rgba(255,255,255,0.32);
+      border-radius: 12px;
+      padding: 13px 16px;
+      color: white;
+      font-size: 1rem;
+      outline: none;
+      transition: border 0.2s, background 0.2s;
+      font-family: inherit;
+    }
+    .f-input::placeholder { color: rgba(255,255,255,0.5); }
+    .f-input:focus { border-color: rgba(255,255,255,0.75); background: rgba(255,255,255,0.24); }
+    select.f-input option { background: #3b0764; color: white; }
+    textarea.f-input { resize: vertical; min-height: 155px; line-height: 1.65; }
+
+    .mood-btn {
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      gap: 5px; padding: 12px 5px; border-radius: 14px;
+      border: 2px solid rgba(255,255,255,0.22);
+      background: rgba(255,255,255,0.1); cursor: pointer;
+      transition: all 0.22s; min-width: 0;
+    }
+    .mood-btn:hover { background: rgba(255,255,255,0.22); border-color: rgba(255,255,255,0.5); transform: translateY(-2px); }
+    .mood-btn.selected { background: rgba(255,255,255,0.3); border-color: white; box-shadow: 0 0 16px rgba(255,255,255,0.3); transform: translateY(-2px); }
+    .mood-icon { font-size: 1.8rem; line-height: 1; }
+    .mood-lbl  { font-size: 0.64rem; color: rgba(255,255,255,0.88); text-align: center; font-weight: 500; line-height: 1.25; }
+
+    .btn {
+      display: block; width: 100%; padding: 16px 20px;
+      border-radius: 14px; border: none; font-size: 1rem;
+      font-weight: 700; font-family: inherit; cursor: pointer;
+      transition: all 0.22s; text-align: center; line-height: 1.3;
+    }
+    .btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 10px 28px rgba(0,0,0,0.22); }
+    .btn:active:not(:disabled) { transform: translateY(-1px); }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-green  { background: linear-gradient(135deg, #34d399, #10b981); color: #064e3b; }
+    .btn-amber  { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #451a03; }
+    .btn-purple { background: linear-gradient(135deg, #a78bfa, #f0abfc); color: #3b0764; }
+
+    .btn-ghost {
+      background: rgba(255,255,255,0.14); color: white;
+      border: 1px solid rgba(255,255,255,0.3); border-radius: 10px;
+      padding: 9px 18px; cursor: pointer; font-size: 0.88rem;
+      font-family: inherit; transition: all 0.2s; width: auto;
+    }
+    .btn-ghost:hover { background: rgba(255,255,255,0.25); }
+
+    .chip {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.18); border-radius: 20px;
+      padding: 5px 13px; color: white; font-size: 0.82rem; font-weight: 500;
+    }
+
+    .f-card {
+      background: rgba(255,255,255,0.11); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 14px; padding: 14px 16px; margin-bottom: 10px; transition: background 0.2s;
+    }
+    .f-card:hover { background: rgba(255,255,255,0.17); }
+
+    .tag { display: inline-flex; align-items: center; gap: 5px; border-radius: 20px; padding: 3px 11px; font-size: 0.78rem; font-weight: 500; }
+    .tag-subj { background: rgba(167,139,250,0.3); color: rgba(255,255,255,0.9); }
+
+    .spinner {
+      width: 32px; height: 32px;
+      border: 3px solid rgba(255,255,255,0.22);
+      border-top-color: white; border-radius: 50%;
+      animation: spin 0.8s linear infinite; margin: 0 auto;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .pwd-input {
+      background: rgba(255,255,255,0.16); border: 2px solid rgba(255,255,255,0.38);
+      border-radius: 14px; padding: 18px; text-align: center;
+      font-size: 2rem; letter-spacing: 12px; color: white;
+      outline: none; width: 100%; max-width: 220px;
+      font-family: inherit; transition: border 0.2s;
+    }
+    .pwd-input:focus { border-color: rgba(255,255,255,0.8); }
+    .pwd-input::placeholder { letter-spacing: 3px; font-size: 0.88rem; }
+
+    .field-label {
+      color: rgba(255,255,255,0.88); font-size: 0.88rem;
+      font-weight: 600; display: block; margin-bottom: 8px;
+    }
+
+    @media (max-width: 860px) {
+      .glass { border-radius: 18px; }
+      .mood-icon { font-size: 1.5rem; }
+      .mood-lbl  { font-size: 0.6rem; }
+    }
+    body.is-mobile .glass { border-radius: 18px; }
+    body.is-mobile .mood-icon { font-size: 1.5rem; }
+    body.is-mobile .mood-lbl  { font-size: 0.6rem; }
+  </style>
+</head>
+<body>
+
+<!-- ╔══════════════════════════════════════════════════╗
+     ║   SCREEN 1 : HOME                              ║
+     ╚══════════════════════════════════════════════════╝ -->
+<div id="screenHome" class="screen"
+     style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding:28px 20px;">
+  <div class="glass" style="width:100%; max-width:440px; padding:48px 34px; text-align:center;">
+    <div style="font-size:3.6rem; margin-bottom:12px; line-height:1;">📋</div>
+    <h1 style="color:white; font-size:1.55rem; font-weight:800; margin-bottom:6px;">
+      ความรู้สึกต่อการเรียนการสอน
+    </h1>
+    <p style="color:rgba(255,255,255,0.72); font-size:0.88rem; margin-bottom:40px; line-height:1.55;">
+      เลือกว่าคุณเป็นใคร เพื่อเริ่มต้น ✨
+    </p>
+    <div style="display:flex; flex-direction:column; gap:14px;">
+      <button class="btn btn-green" style="padding:22px 20px; font-size:1.1rem;"
+              onclick="go('screenStudent')">
+        🎓 นักเรียน
+        <div style="font-size:0.8rem; font-weight:400; opacity:0.85; margin-top:4px;">
+          บอกความรู้สึกของฉัน (ไม่ระบุตัวตน)
+        </div>
+      </button>
+      <button class="btn btn-amber" style="padding:22px 20px; font-size:1.1rem;"
+              onclick="go('screenAdminLogin')">
+        🔐 ครูผู้สอน / Admin
+        <div style="font-size:0.8rem; font-weight:400; opacity:0.85; margin-top:4px;">
+          ดูข้อมูลและวิเคราะห์ผล
+        </div>
+      </button>
+    </div>
+    <p style="color:rgba(255,255,255,0.4); font-size:0.72rem; margin-top:38px;">
+      🔒 ข้อมูลนักเรียนทุกรายการไม่ระบุตัวตน
+    </p>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════════╗
+     ║   SCREEN 2 : STUDENT FORM                      ║
+     ╚══════════════════════════════════════════════════╝ -->
+<div id="screenStudent" class="screen"
+     style="display:none; flex-direction:column; align-items:center; padding:28px 20px;">
+  <div class="glass" style="width:100%; max-width:520px; padding:28px 26px;">
+
+    <div style="display:flex; align-items:center; gap:12px; margin-bottom:26px; flex-wrap:wrap;">
+      <button class="btn-ghost" onclick="go('screenHome')">← กลับ</button>
+      <div>
+        <h2 style="color:white; font-size:1.2rem; font-weight:700; margin-bottom:2px;">💬 บอกความรู้สึกของฉัน</h2>
+        <p style="color:rgba(255,255,255,0.62); font-size:0.78rem;">ไม่ระบุตัวตน — พูดได้เลยเลย 😊</p>
+      </div>
+    </div>
+
+    <!-- Subject -->
+    <div style="margin-bottom:18px;">
+      <label class="field-label">📚 วิชา <span style="font-weight:400; opacity:0.65;">(ไม่บังคับ)</span></label>
+      <input id="inputSubject" type="text" class="f-input"
+             placeholder="เช่น ภาษาอังกฤษ, คณิตศาสตร์, ฟิสิกส์..." maxlength="100">
+    </div>
+
+    <!-- Mood -->
+    <div style="margin-bottom:18px;">
+      <label class="field-label">🎭 ความรู้สึกตอนนี้ <span style="font-weight:400; opacity:0.65;">(ไม่บังคับ)</span></label>
+      <div style="display:flex; gap:8px;">
+        <button class="mood-btn" data-mood="สนุกมาก" onclick="pickMood(this)">
+          <span class="mood-icon">😄</span><span class="mood-lbl">สนุก<br>มาก</span>
+        </button>
+        <button class="mood-btn" data-mood="โอเค" onclick="pickMood(this)">
+          <span class="mood-icon">🙂</span><span class="mood-lbl">โอเค</span>
+        </button>
+        <button class="mood-btn" data-mood="เฉยๆ" onclick="pickMood(this)">
+          <span class="mood-icon">😐</span><span class="mood-lbl">เฉยๆ</span>
+        </button>
+        <button class="mood-btn" data-mood="สับสน" onclick="pickMood(this)">
+          <span class="mood-icon">😕</span><span class="mood-lbl">สับสน<br>/ยาก</span>
+        </button>
+        <button class="mood-btn" data-mood="เครียด" onclick="pickMood(this)">
+          <span class="mood-icon">😢</span><span class="mood-lbl">เครียด<br>/ไม่ดี</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div style="margin-bottom:22px;">
+      <label class="field-label">✏️ อยากบอกครูอะไร? พิมพ์ได้เลย!</label>
+      <textarea id="inputMessage" class="f-input" maxlength="600" oninput="updateCount()"
+        placeholder="ไม่มีถูกผิด พิมพ์ได้ทุกอย่างเลยนะ เช่น&#10;- สิ่งที่ชอบในวิชานี้&#10;- อยากให้ครูสอนแบบไหน&#10;- สิ่งที่เข้าใจยาก&#10;- อยากให้เปลี่ยนอะไร&#10;- หรือแค่อยากระบาย ก็ได้นะ 🙏"></textarea>
+      <div style="text-align:right; color:rgba(255,255,255,0.42); font-size:0.72rem; margin-top:4px;">
+        <span id="charCount">0</span>/600
+      </div>
+    </div>
+
+    <button id="btnSubmit" class="btn btn-green" onclick="submitFeedback()">
+      📩 ส่งความรู้สึก
+    </button>
+    <p style="color:rgba(255,255,255,0.42); font-size:0.72rem; text-align:center; margin-top:14px;">
+      🔒 ครูจะไม่รู้ว่าใครส่ง — ข้อมูลทั้งหมดไม่ระบุตัวตน
+    </p>
+  </div>
+  <div style="height:30px;"></div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════════╗
+     ║   SCREEN 3 : ADMIN LOGIN                       ║
+     ╚══════════════════════════════════════════════════╝ -->
+<div id="screenAdminLogin" class="screen"
+     style="display:none; flex-direction:column; align-items:center; justify-content:center; padding:28px 20px;">
+  <div class="glass" style="width:100%; max-width:340px; padding:48px 28px; text-align:center;">
+    <div style="font-size:3rem; margin-bottom:14px; line-height:1;">🔐</div>
+    <h2 style="color:white; font-size:1.35rem; font-weight:700; margin-bottom:6px;">เข้าสู่ระบบครู</h2>
+    <p style="color:rgba(255,255,255,0.65); font-size:0.85rem; margin-bottom:28px;">กรุณาใส่รหัสผ่าน</p>
+    <div style="display:flex; justify-content:center; margin-bottom:24px;">
+      <input id="adminPwd" type="password" class="pwd-input"
+             placeholder="••••" maxlength="10"
+             onkeydown="if(event.key==='Enter') verifyAdmin()">
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center; gap:12px;">
+      <button class="btn btn-amber" style="max-width:200px;" onclick="verifyAdmin()">เข้าสู่ระบบ</button>
+      <button class="btn-ghost" onclick="go('screenHome')">← กลับ</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- ╔══════════════════════════════════════════════════╗
+     ║   SCREEN 4 : ADMIN DASHBOARD                   ║
+     ╚══════════════════════════════════════════════════╝ -->
+<div id="screenAdmin" class="screen"
+     style="display:none; padding:22px 16px; min-height:100vh;">
+  <div style="max-width:660px; width:100%; margin:0 auto;">
+
+    <!-- Header -->
+    <div class="glass" style="padding:20px 22px; margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+        <div>
+          <h2 style="color:white; font-size:1.2rem; font-weight:700; margin-bottom:3px;">📊 ผลความรู้สึกนักเรียน</h2>
+          <p id="totalLabel" style="color:rgba(255,255,255,0.62); font-size:0.8rem;">กำลังโหลด...</p>
+        </div>
+        <button class="btn-ghost" onclick="go('screenHome')">← ออก</button>
+      </div>
+      <div id="statsBar" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:14px;"></div>
+    </div>
+
+    <!-- AI Summary -->
+    <div class="glass" style="padding:20px 22px; margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
+        <div>
+          <h3 style="color:white; font-size:1rem; font-weight:700; margin-bottom:3px;">🤖 สรุปโดย AI</h3>
+          <p style="color:rgba(255,255,255,0.55); font-size:0.78rem;">AI รวบรวมประเด็นที่คล้ายกันและให้ข้อเสนอแนะ</p>
+        </div>
+        <button id="btnAI" class="btn btn-purple"
+                style="width:auto; padding:10px 20px; font-size:0.85rem; white-space:nowrap;"
+                onclick="requestAI()">
+          ✨ วิเคราะห์ความรู้สึก
+        </button>
+      </div>
+      <div id="aiLoader" style="display:none; text-align:center; padding:26px 0;">
+        <div class="spinner"></div>
+        <p style="color:rgba(255,255,255,0.62); font-size:0.82rem; margin-top:12px;">AI กำลังวิเคราะห์ข้อมูล...</p>
+      </div>
+      <div id="aiResult" style="display:none;">
+        <div style="background:rgba(0,0,0,0.2); border:1px solid rgba(255,255,255,0.18); border-radius:14px; padding:20px; color:rgba(255,255,255,0.92); font-size:0.9rem; line-height:1.8; margin-top:14px;"
+             id="aiText"></div>
+        <div style="text-align:right; margin-top:10px;">
+          <button class="btn-ghost" style="font-size:0.78rem; padding:6px 14px;" onclick="requestAI()">🔄 สรุปใหม่</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Feedback List -->
+    <div class="glass" style="padding:20px 22px; margin-bottom:14px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:8px;">
+        <h3 style="color:white; font-size:1rem; font-weight:700;">💬 ความรู้สึกทั้งหมด</h3>
+        <button class="btn-ghost" style="font-size:0.8rem; padding:7px 14px;" onclick="loadAll()">🔄 รีเฟรช</button>
+      </div>
+      <div style="margin-bottom:14px;">
+        <select id="filterMood" class="f-input" style="width:auto; padding:8px 14px; font-size:0.82rem;" onchange="applyFilter()">
+          <option value="">🎭 ทุกความรู้สึก</option>
+          <option value="สนุกมาก">😄 สนุกมาก</option>
+          <option value="โอเค">🙂 โอเค</option>
+          <option value="เฉยๆ">😐 เฉยๆ</option>
+          <option value="สับสน">😕 สับสน / ยาก</option>
+          <option value="เครียด">😢 เครียด / ไม่ดี</option>
+        </select>
+      </div>
+      <div id="feedbackList">
+        <div style="text-align:center; padding:34px; color:rgba(255,255,255,0.52);">
+          <div class="spinner"></div>
+          <p style="margin-top:12px; font-size:0.88rem;">กำลังโหลดข้อมูล...</p>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:32px;"></div>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════
+     JavaScript
+═══════════════════════════════════════════════════ -->
+<script>
+// ════════════════════════════════════════════════════
+//  ⚙️  CONFIG  —  เปลี่ยน GAS_URL ถ้า deploy ใหม่
+// ════════════════════════════════════════════════════
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbyiNJOfOmRQuORmE6j4LrsJqhdFLEc0cAMgWECnkQB2HbVns1o27UmTmx1QLKe3_y21/exec';
+const ADMIN_PWD = '7846';
+
+// ════════════════════════════════════════════════════
+//  API helper  —  fetch → GAS REST endpoint
+// ════════════════════════════════════════════════════
+async function apiGet(params) {
+  const qs  = new URLSearchParams(params).toString();
+  const res = await fetch(`${GAS_URL}?${qs}`);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+// ════════════════════════════════════════════════════
+//  Mobile detection
+// ════════════════════════════════════════════════════
+(function () {
+  function check() {
+    if (window.innerWidth <= 860) document.body.classList.add('is-mobile');
+    else document.body.classList.remove('is-mobile');
+  }
+  check();
+  window.addEventListener('resize', check);
+})();
+
+// ════════════════════════════════════════════════════
+//  Screen navigation
+// ════════════════════════════════════════════════════
+const DISP = {
+  screenHome: 'flex', screenStudent: 'flex',
+  screenAdminLogin: 'flex', screenAdmin: 'block'
+};
+function go(id) {
+  document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+  document.getElementById(id).style.display = DISP[id] || 'flex';
+  window.scrollTo(0, 0);
+}
+
+// ════════════════════════════════════════════════════
+//  Mood selection
+// ════════════════════════════════════════════════════
+let selectedMood = '';
+function pickMood(btn) {
+  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedMood = btn.dataset.mood;
+}
+
+// ════════════════════════════════════════════════════
+//  Character counter
+// ════════════════════════════════════════════════════
+function updateCount() {
+  document.getElementById('charCount').textContent =
+    document.getElementById('inputMessage').value.length;
+}
+
+// ════════════════════════════════════════════════════
+//  Submit student feedback
+// ════════════════════════════════════════════════════
+async function submitFeedback() {
+  const message = document.getElementById('inputMessage').value.trim();
+  const subject = document.getElementById('inputSubject').value.trim();
+  if (!message) { swal('warning', 'โอ๊ะ!', 'กรุณาพิมพ์ความรู้สึกของคุณก่อนนะ 😊'); return; }
+
+  const btn = document.getElementById('btnSubmit');
+  btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...';
+
+  try {
+    const res = await apiGet({ action: 'save', subject, mood: selectedMood, message });
+    btn.disabled = false; btn.textContent = '📩 ส่งความรู้สึก';
+
+    if (res && res.success) {
+      await Swal.fire({
+        icon: 'success', title: 'ขอบคุณมากเลย! 🙏',
+        text: 'ครูได้รับความรู้สึกของคุณแล้ว จะนำไปปรับปรุงการสอนต่อไปนะ',
+        background: 'rgba(22,12,55,0.97)', color: '#fff',
+        confirmButtonColor: '#10b981', confirmButtonText: 'กลับหน้าแรก'
+      });
+      document.getElementById('inputMessage').value = '';
+      document.getElementById('inputSubject').value = '';
+      document.getElementById('charCount').textContent = '0';
+      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      selectedMood = '';
+      go('screenHome');
+    } else {
+      swal('error', 'เกิดข้อผิดพลาด', (res && res.error) || 'กรุณาลองใหม่อีกครั้ง');
+    }
+  } catch (err) {
+    btn.disabled = false; btn.textContent = '📩 ส่งความรู้สึก';
+    swal('error', 'ไม่สามารถเชื่อมต่อได้', 'กรุณาตรวจสอบอินเตอร์เน็ตแล้วลองใหม่');
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  Admin login
+// ════════════════════════════════════════════════════
+function verifyAdmin() {
+  if (document.getElementById('adminPwd').value.trim() === ADMIN_PWD) {
+    document.getElementById('adminPwd').value = '';
+    go('screenAdmin');
+    loadAll();
+  } else {
+    swal('error', 'รหัสผ่านไม่ถูกต้อง', 'กรุณาลองใหม่อีกครั้ง');
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  Load all feedback
+// ════════════════════════════════════════════════════
+let allFeedback = [];
+
+async function loadAll() {
+  document.getElementById('feedbackList').innerHTML = mkSpinner('กำลังโหลดข้อมูล...');
+  document.getElementById('statsBar').innerHTML     = '';
+  document.getElementById('totalLabel').textContent = 'กำลังโหลด...';
+  document.getElementById('aiResult').style.display = 'none';
+  document.getElementById('aiLoader').style.display = 'none';
+  document.getElementById('filterMood').value       = '';
+
+  try {
+    const res = await apiGet({ action: 'getFeedback' });
+    if (res && res.success) {
+      allFeedback = res.data;
+      renderStats(allFeedback);
+      applyFilter();
+    } else {
+      document.getElementById('feedbackList').innerHTML =
+        `<p style="color:rgba(255,255,255,0.6); text-align:center; padding:20px;">
+           เกิดข้อผิดพลาด: ${esc((res && res.error) || 'ไม่ทราบสาเหตุ')}
+         </p>`;
+    }
+  } catch (err) {
+    document.getElementById('feedbackList').innerHTML =
+      `<p style="color:rgba(255,255,255,0.6); text-align:center; padding:20px;">
+         ❌ ไม่สามารถเชื่อมต่อ GAS ได้<br>
+         <small style="opacity:0.7;">${esc(String(err))}</small>
+       </p>`;
+  }
+}
+
+function applyFilter() {
+  const mood = document.getElementById('filterMood').value;
+  renderFeedback(mood ? allFeedback.filter(f => f.mood === mood) : allFeedback);
+}
+
+// ════════════════════════════════════════════════════
+//  Render stats
+// ════════════════════════════════════════════════════
+function renderStats(data) {
+  document.getElementById('totalLabel').textContent = `ข้อมูลทั้งหมด ${data.length} รายการ`;
+  if (!data.length) { document.getElementById('statsBar').innerHTML = ''; return; }
+  const mc = {};
+  data.forEach(f => { if (f.mood) mc[f.mood] = (mc[f.mood] || 0) + 1; });
+  const EM = { สนุกมาก:'😄', โอเค:'🙂', เฉยๆ:'😐', สับสน:'😕', เครียด:'😢' };
+  let h = `<span class="chip">📋 ${data.length} รายการ</span>`;
+  Object.entries(mc).sort((a,b) => b[1]-a[1]).forEach(([m,c]) => {
+    h += `<span class="chip">${EM[m]||'•'} ${m}: ${c}</span>`;
+  });
+  document.getElementById('statsBar').innerHTML = h;
+}
+
+// ════════════════════════════════════════════════════
+//  Render feedback cards
+// ════════════════════════════════════════════════════
+function renderFeedback(data) {
+  if (!data.length) {
+    document.getElementById('feedbackList').innerHTML =
+      `<div style="text-align:center; padding:40px; color:rgba(255,255,255,0.5);">
+         <div style="font-size:2.5rem;">📭</div>
+         <p style="margin-top:12px; font-size:0.88rem;">ไม่มีข้อมูลในหมวดนี้</p>
+       </div>`;
+    return;
+  }
+  const MC = {
+    สนุกมาก: { bg:'rgba(52,211,153,0.18)', bd:'rgba(52,211,153,0.6)',  em:'😄' },
+    โอเค:     { bg:'rgba(163,230,53,0.18)', bd:'rgba(163,230,53,0.6)',  em:'🙂' },
+    เฉยๆ:    { bg:'rgba(251,191,36,0.18)', bd:'rgba(251,191,36,0.6)',  em:'😐' },
+    สับสน:    { bg:'rgba(251,146,60,0.18)', bd:'rgba(251,146,60,0.6)',  em:'😕' },
+    เครียด:   { bg:'rgba(244,63,94,0.18)',  bd:'rgba(244,63,94,0.6)',   em:'😢' }
+  };
+  document.getElementById('feedbackList').innerHTML = data.map(f => {
+    const c = MC[f.mood] || {};
+    const mTag = f.mood
+      ? `<span class="tag" style="background:${c.bg||'rgba(255,255,255,0.15)'}; border:1px solid ${c.bd||'rgba(255,255,255,0.3)'}; color:white;">${c.em||''} ${esc(f.mood)}</span>` : '';
+    const sTag = f.subject
+      ? `<span class="tag tag-subj">📚 ${esc(f.subject)}</span>` : '';
+    return `
+      <div class="f-card">
+        <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:6px; margin-bottom:9px;">
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">${mTag}${sTag}</div>
+          <span style="color:rgba(255,255,255,0.38); font-size:0.72rem; white-space:nowrap;">${esc(f.timestamp)}</span>
+        </div>
+        <p style="color:rgba(255,255,255,0.92); font-size:0.92rem; line-height:1.65; margin:0;">${esc(f.message)}</p>
+      </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════
+//  AI Summary  —  GAS อ่าน Sheet แล้วส่ง AI เอง
+// ════════════════════════════════════════════════════
+async function requestAI() {
+  if (!allFeedback.length) { swal('warning', 'ไม่มีข้อมูล', 'ยังไม่มีความรู้สึกนักเรียนเข้ามา'); return; }
+
+  document.getElementById('aiLoader').style.display = 'block';
+  document.getElementById('aiResult').style.display = 'none';
+  document.getElementById('btnAI').disabled          = true;
+  document.getElementById('btnAI').textContent       = '⏳ กำลังวิเคราะห์...';
+
+  try {
+    const res = await apiGet({ action: 'aiSummary' });
+    document.getElementById('aiLoader').style.display = 'none';
+    document.getElementById('btnAI').disabled          = false;
+    document.getElementById('btnAI').textContent       = '✨ วิเคราะห์ความรู้สึก';
+
+    if (res && res.success) {
+      document.getElementById('aiResult').style.display = 'block';
+      document.getElementById('aiText').innerHTML        = renderMD(res.summary);
+    } else {
+      swal('error', 'ไม่สามารถสรุปได้', (res && res.error) || 'กรุณาลองใหม่');
+    }
+  } catch (err) {
+    document.getElementById('aiLoader').style.display = 'none';
+    document.getElementById('btnAI').disabled          = false;
+    document.getElementById('btnAI').textContent       = '✨ วิเคราะห์ความรู้สึก';
+    swal('error', 'เกิดข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อ GAS ได้');
+  }
+}
+
+// ════════════════════════════════════════════════════
+//  Helpers
+// ════════════════════════════════════════════════════
+function esc(t) {
+  return String(t||'')
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;').replace(/\n/g,'<br>');
+}
+function renderMD(t) {
+  return String(t||'')
+    .replace(/\*\*(.*?)\*\*/g,'<strong style="color:#fbbf24;">$1</strong>')
+    .replace(/\n/g,'<br>');
+}
+function mkSpinner(msg) {
+  return `<div style="text-align:center; padding:34px; color:rgba(255,255,255,0.52);">
+    <div class="spinner"></div><p style="margin-top:12px; font-size:0.88rem;">${msg}</p></div>`;
+}
+function swal(icon, title, text) {
+  return Swal.fire({ icon, title, text, background:'rgba(22,12,55,0.97)', color:'#fff', confirmButtonColor:'#a78bfa' });
+}
+</script>
+</body>
+</html>
