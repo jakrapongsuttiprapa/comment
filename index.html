@@ -204,6 +204,12 @@
 <div id="screenHome" class="screen"
      style="display:flex; flex-direction:column; position:relative; min-height:100vh;">
 
+  <!-- Full-cover banner image -->
+  <img src="https://i.postimg.cc/hGWLp0gk/48D93FC5-BDDD-424C-8F29-482F5EE3E55C.png"
+       alt="" aria-hidden="true"
+       style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; display:block;"
+       onerror="this.remove()">
+
   <div class="hero-overlay"></div>
 
   <!-- Top nav bar -->
@@ -224,53 +230,39 @@
   </div>
 
   <!-- Hero center content -->
-  <div style="position:relative; z-index:1; flex:1; display:flex; align-items:center; justify-content:center; padding:32px 40px;">
-    <div class="hero-inner" style="display:flex; align-items:center; gap:52px; max-width:1000px; width:100%;">
+  <div style="position:relative; z-index:1; flex:1; display:flex; align-items:center; justify-content:center; padding:32px 24px;">
+    <div style="text-align:center; max-width:580px; width:100%;">
 
-      <!-- ── Left: Text + CTA ── -->
-      <div style="flex:1; min-width:0; text-align:center;">
-
-        <div class="fu" style="display:inline-flex; align-items:center; gap:8px; background:rgba(59,130,246,0.25); border:1px solid rgba(147,197,253,0.45); border-radius:20px; padding:7px 18px; margin-bottom:24px; color:rgba(255,255,255,0.9); font-size:0.8rem; font-weight:600;">
-          ✨ พื้นที่ปลอดภัยสำหรับนักเรียน ม.4 – ม.6
-        </div>
-
-        <h1 class="fu2 hero-h1" style="color:white; font-size:2.6rem; font-weight:800; line-height:1.2; margin-bottom:16px; letter-spacing:-0.02em;">
-          บอกความรู้สึก<br>
-          <span style="color:#7dd3fc;">ต่อการเรียนการสอน</span>
-        </h1>
-
-        <p class="fu3" style="color:rgba(255,255,255,0.75); font-size:1rem; line-height:1.7; margin-bottom:36px; max-width:380px; margin-left:auto; margin-right:auto;">
-          พูดได้ตรงๆ ไม่มีถูกผิด ครูจะนำความคิดเห็นของคุณไปปรับปรุงการสอนให้ดีขึ้น
-        </p>
-
-        <div class="fu4 hero-btns" style="display:flex; gap:14px; justify-content:center; margin-bottom:36px; flex-wrap:wrap;">
-          <button class="btn btn-blue" style="min-width:175px; max-width:220px; padding:17px 22px; font-size:1rem; border-radius:14px;"
-                  onclick="go('screenStudent')">
-            🎓 นักเรียน
-            <div style="font-size:0.78rem; font-weight:500; opacity:0.88; margin-top:3px;">บอกความรู้สึกของฉัน</div>
-          </button>
-          <button class="btn btn-outline-w" style="min-width:175px; max-width:220px; padding:17px 22px; font-size:1rem; border-radius:14px;"
-                  onclick="go('screenAdminLogin')">
-            🔐 ครูผู้สอน
-            <div style="font-size:0.78rem; font-weight:500; opacity:0.88; margin-top:3px;">ดูและวิเคราะห์ผล</div>
-          </button>
-        </div>
-
-        <div class="fu4" style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap;">
-          <div class="trust-badge">✅ ไม่บังคับระบุตัวตน</div>
-          <div class="trust-badge">🛡️ ข้อมูลปลอดภัย</div>
-          <div class="trust-badge">📊 ครูวิเคราะห์ด้วย AI</div>
-        </div>
+      <div class="fu" style="display:inline-flex; align-items:center; gap:8px; background:rgba(59,130,246,0.25); border:1px solid rgba(147,197,253,0.45); border-radius:20px; padding:7px 18px; margin-bottom:28px; color:rgba(255,255,255,0.9); font-size:0.8rem; font-weight:600;">
+        ✨ พื้นที่ปลอดภัยสำหรับนักเรียน ม.4 – ม.6
       </div>
 
-      <!-- ── Right: Hero banner image ── -->
-      <div class="hero-img fu3" style="flex: 0 0 420px;">
-        <img src="https://i.postimg.cc/hGWLp0gk/48D93FC5-BDDD-424C-8F29-482F5EE3E55C.png"
-             alt="hero banner โรงเรียนธนาคารออมสิน"
-             style="width:100%; height:auto; border-radius:20px;
-                    box-shadow: 0 32px 80px rgba(0,0,0,0.45), 0 8px 24px rgba(0,0,0,0.25);
-                    display:block;"
-             onerror="this.parentElement.style.display='none'">
+      <h1 class="fu2 hero-h1" style="color:white; font-size:2.6rem; font-weight:800; line-height:1.2; margin-bottom:18px; letter-spacing:-0.02em;">
+        บอกความรู้สึก<br>
+        <span style="color:#7dd3fc;">ต่อการเรียนการสอน</span>
+      </h1>
+
+      <p class="fu3" style="color:rgba(255,255,255,0.75); font-size:1rem; line-height:1.7; margin-bottom:40px; max-width:400px; margin-left:auto; margin-right:auto;">
+        พูดได้ตรงๆ ไม่มีถูกผิด ครูจะนำความคิดเห็นของคุณไปปรับปรุงการสอนให้ดีขึ้น
+      </p>
+
+      <div class="fu4 hero-btns" style="display:flex; gap:14px; justify-content:center; margin-bottom:40px; flex-wrap:wrap;">
+        <button class="btn btn-blue" style="min-width:190px; max-width:240px; padding:18px 24px; font-size:1.05rem; border-radius:14px;"
+                onclick="go('screenStudent')">
+          🎓 นักเรียน
+          <div style="font-size:0.78rem; font-weight:500; opacity:0.88; margin-top:3px;">บอกความรู้สึกของฉัน</div>
+        </button>
+        <button class="btn btn-outline-w" style="min-width:190px; max-width:240px; padding:18px 24px; font-size:1.05rem; border-radius:14px;"
+                onclick="go('screenAdminLogin')">
+          🔐 ครูผู้สอน
+          <div style="font-size:0.78rem; font-weight:500; opacity:0.88; margin-top:3px;">ดูและวิเคราะห์ผล</div>
+        </button>
+      </div>
+
+      <div class="fu4" style="display:flex; gap:24px; justify-content:center; flex-wrap:wrap;">
+        <div class="trust-badge">✅ ไม่บังคับระบุตัวตน</div>
+        <div class="trust-badge">🛡️ ข้อมูลปลอดภัย</div>
+        <div class="trust-badge">📊 ครูวิเคราะห์ด้วย AI</div>
       </div>
 
     </div>
