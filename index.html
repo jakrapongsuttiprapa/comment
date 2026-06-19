@@ -114,11 +114,6 @@
     .pwd-input:focus { border-color: #3b82f6; background: white; box-shadow: 0 0 0 3px rgba(59,130,246,0.13); }
     .pwd-input::placeholder { letter-spacing: 3px; font-size: 0.88rem; color: #94a3b8; }
 
-    .ai-box {
-      background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 14px;
-      padding: 20px; color: #0f172a; font-size: 0.9rem; line-height: 1.85; margin-top: 14px;
-    }
-
     .trust-badge { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.78); font-size: 0.78rem; font-weight: 500; }
     .divider { height: 1px; background: #e0f0fe; margin: 18px 0; }
     .s-title { color: #0f172a; font-size: 1rem; font-weight: 700; margin-bottom: 3px; }
@@ -131,7 +126,7 @@
     .fu4 { animation: fadeUp 0.5s 0.24s ease both; }
 
     /* ══════════════════════════════
-       NEW: Topic Pills & Delete Btn
+       Topic pills (admin: add/edit/remove)
        ══════════════════════════════ */
     .topic-pill {
       display: flex; align-items: center; gap: 8px;
@@ -142,14 +137,20 @@
       flex: 1; color: #1e40af; font-size: 0.88rem; font-weight: 600;
       overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
     }
-    .btn-rm-topic {
-      width: 22px; height: 22px; border-radius: 50%; border: none;
-      background: #fee2e2; color: #ef4444; cursor: pointer; font-size: 0.72rem;
+    .btn-rm-topic, .btn-edit-topic {
+      width: 24px; height: 24px; border-radius: 50%; border: none;
+      cursor: pointer; font-size: 0.7rem;
       display: flex; align-items: center; justify-content: center; flex-shrink: 0;
       transition: all 0.18s; font-weight: 700; line-height: 1;
     }
-    .btn-rm-topic:hover { background: #ef4444; color: white; }
+    .btn-rm-topic   { background: #fee2e2; color: #ef4444; }
+    .btn-rm-topic:hover   { background: #ef4444; color: white; }
+    .btn-edit-topic { background: #dbeafe; color: #1d4ed8; }
+    .btn-edit-topic:hover { background: #1d4ed8; color: white; }
 
+    /* ══════════════════════════════
+       Delete feedback button
+       ══════════════════════════════ */
     .btn-del-fb {
       width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
       border: 1px solid #fecdd3; background: transparent; color: #fca5a5;
@@ -158,6 +159,32 @@
       transition: all 0.18s;
     }
     .btn-del-fb:hover { background: #fee2e2; border-color: #f87171; color: #dc2626; }
+
+    /* ══════════════════════════════
+       Guideline tip box (student form)
+       ══════════════════════════════ */
+    .tip-box {
+      background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 12px;
+      padding: 13px 15px; margin-bottom: 16px;
+    }
+    .tip-box p { color: #1e40af; font-size: 0.79rem; font-weight: 700; margin-bottom: 7px; }
+    .tip-box ul { margin: 0; padding-left: 18px; }
+    .tip-box li { color: #475569; font-size: 0.79rem; line-height: 1.75; }
+
+    /* ══════════════════════════════
+       Image upload (student form)
+       ══════════════════════════════ */
+    .img-preview-wrap {
+      display: none; margin-top: 10px; position: relative; max-width: 220px;
+    }
+    .img-preview-wrap img {
+      width: 100%; border-radius: 10px; border: 1.5px solid #bfdbfe; display: block;
+    }
+    .btn-rm-img {
+      position: absolute; top: -8px; right: -8px; width: 26px; height: 26px;
+      border-radius: 50%; background: #ef4444; color: white; border: 2px solid white;
+      cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; justify-content: center;
+    }
 
     /* ══════════════════════════════════════
        MOBILE  (≤ 860px)
@@ -272,7 +299,7 @@
         <div class="fu4 trust-row" style="display:flex; gap:20px; justify-content:center; flex-wrap:wrap;">
           <div class="trust-badge">✅ ไม่บังคับระบุตัวตน</div>
           <div class="trust-badge">🛡️ ข้อมูลปลอดภัย</div>
-          <div class="trust-badge">📊 ครูวิเคราะห์ด้วย AI</div>
+          <div class="trust-badge">🔒 ทุกอย่างเป็นความลับ</div>
         </div>
       </div>
 
@@ -322,7 +349,17 @@
       </div>
     </div>
 
-    <div style="margin-bottom:20px;">
+    <!-- ── Guideline tip box ── -->
+    <div class="tip-box">
+      <p>💡 ก่อนส่ง อย่าลืม...</p>
+      <ul>
+        <li>ดูหัวข้อที่เลือกไว้ด้านบน แล้วตอบให้ตรงประเด็นน้าาา 🎯</li>
+        <li>แนบรูปภาพเพิ่มได้ ถ้าอยากให้ครูเห็นอะไรเป็นพิเศษ 📷</li>
+        <li>ทุกข้อความและรูปภาพเป็นความลับ ครูจะไม่รู้ว่าใครส่ง 🔒</li>
+      </ul>
+    </div>
+
+    <div style="margin-bottom:18px;">
       <label class="field-label">✏️ อยากบอกครูอะไร? พิมพ์ได้เลย!</label>
       <textarea id="inputMessage" class="f-input" maxlength="600" oninput="updateCount()"
         placeholder="ไม่มีถูกผิด พิมพ์ได้ทุกอย่างเลยนะ เช่น&#10;· สิ่งที่ชอบในวิชานี้&#10;· อยากให้ครูสอนแบบไหน&#10;· สิ่งที่เข้าใจยาก&#10;· อยากให้เปลี่ยนอะไร&#10;· หรือแค่อยากระบาย 🙏"></textarea>
@@ -332,10 +369,23 @@
       </div>
     </div>
 
+    <!-- ── Image upload ── -->
+    <div style="margin-bottom:20px;">
+      <label class="field-label">📷 แนบรูปภาพ <span style="font-weight:400; color:#94a3b8;">(ไม่บังคับ)</span></label>
+      <input type="file" id="inputImage" accept="image/*" style="display:none;" onchange="handleImageSelect(event)">
+      <button type="button" class="btn-ghost-dk" style="width:100%;" onclick="document.getElementById('inputImage').click()">
+        ➕ เลือกรูปภาพ
+      </button>
+      <div id="imagePreviewWrap" class="img-preview-wrap">
+        <img id="imagePreview" src="" alt="ตัวอย่างรูปภาพ">
+        <button type="button" class="btn-rm-img" onclick="removeImage()">✕</button>
+      </div>
+    </div>
+
     <div class="divider"></div>
     <button id="btnSubmit" class="btn btn-blue" onclick="submitFeedback()">📩 ส่งความรู้สึก</button>
     <p style="color:#94a3b8; font-size:0.72rem; text-align:center; margin-top:12px;">
-      🔒 ครูจะไม่รู้ว่าใครส่ง — ข้อมูลทั้งหมดเป็นแบบนิรนาม
+      🔒 ครูจะไม่รู้ว่าใครส่ง — ข้อมูลและรูปภาพทั้งหมดเป็นความลับ
     </p>
   </div>
   <div style="height:24px;"></div>
@@ -387,7 +437,7 @@
       <div id="statsBar" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;"></div>
     </div>
 
-    <!-- ══ NEW: Topics Management Card ══ -->
+    <!-- Topics Management Card -->
     <div class="wcard" style="padding:20px 22px; margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
         <div>
@@ -400,41 +450,14 @@
           💾 บันทึกหัวข้อ
         </button>
       </div>
-      <!-- Add input row -->
       <div style="display:flex; gap:8px; margin-bottom:12px;">
         <input id="newTopicInput" type="text" class="f-input" style="flex:1; padding:10px 14px;"
                placeholder="พิมพ์ชื่อวิชา / หัวข้อ แล้วกด Enter หรือ + เพิ่ม"
                maxlength="80" onkeydown="if(event.key==='Enter') addTopic()">
         <button class="btn-ghost-dk" style="white-space:nowrap;" onclick="addTopic()">+ เพิ่ม</button>
       </div>
-      <!-- Topics list -->
       <div id="topicsList">
         <p style="color:#94a3b8; font-size:0.82rem; text-align:center; padding:12px 0;">กำลังโหลด...</p>
-      </div>
-    </div>
-
-    <!-- AI Summary card -->
-    <div class="wcard" style="padding:20px 22px; margin-bottom:12px;">
-      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
-        <div>
-          <h3 class="s-title">🤖 สรุปโดย AI</h3>
-          <p class="s-sub">AI วิเคราะห์ประเด็นที่คล้ายกันและให้ข้อเสนอแนะ</p>
-        </div>
-        <button id="btnAI" class="btn btn-blue"
-                style="width:auto; padding:10px 18px; font-size:0.85rem; white-space:nowrap; border-radius:10px;"
-                onclick="requestAI()">
-          ✨ วิเคราะห์ความรู้สึก
-        </button>
-      </div>
-      <div id="aiLoader" style="display:none; text-align:center; padding:24px 0;">
-        <div class="spinner"></div>
-        <p style="color:#64748b; font-size:0.82rem; margin-top:12px;">AI กำลังวิเคราะห์ข้อมูล...</p>
-      </div>
-      <div id="aiResult" style="display:none;">
-        <div class="ai-box" id="aiText"></div>
-        <div style="text-align:right; margin-top:10px;">
-          <button class="btn-ghost-dk" style="font-size:0.78rem; padding:6px 14px;" onclick="requestAI()">🔄 สรุปใหม่</button>
-        </div>
       </div>
     </div>
 
@@ -442,7 +465,7 @@
     <div class="wcard" style="padding:20px 22px; margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
         <h3 class="s-title">💬 ความรู้สึกทั้งหมด</h3>
-        <div style="display:flex; gap:8px;">
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
           <select id="filterMood" class="f-input" style="width:auto; padding:7px 12px; font-size:0.82rem;" onchange="applyFilter()">
             <option value="">🎭 ทุกความรู้สึก</option>
             <option value="สนุกมาก">😄 สนุกมาก</option>
@@ -451,6 +474,7 @@
             <option value="สับสน">😕 สับสน / ยาก</option>
             <option value="เครียด">😢 เครียด / ไม่ดี</option>
           </select>
+          <button id="btnExportWord" class="btn-ghost-dk" style="font-size:0.8rem; padding:7px 14px;" onclick="exportToWord()">📄 ส่งออกเป็น Word</button>
           <button class="btn-ghost-dk" style="font-size:0.8rem; padding:7px 14px;" onclick="loadAll()">🔄</button>
         </div>
       </div>
@@ -472,11 +496,23 @@ const GAS_URL   = 'https://script.google.com/macros/s/AKfycbyiNJOfOmRQuORmE6j4Lr
 const ADMIN_PWD = '7846';
 const DEL_PWD   = '1112';
 
-let adminTopics = [];
-let allFeedback = [];
+let adminTopics  = [];
+let allFeedback  = [];
+let pendingImage = null; // base64 dataURL of resized image (or null)
 
+/* ── API helpers ── */
 async function apiGet(p) {
   const r = await fetch(GAS_URL + '?' + new URLSearchParams(p).toString());
+  if (!r.ok) throw new Error('HTTP ' + r.status);
+  return r.json();
+}
+async function apiPost(action, payload) {
+  const body = Object.assign({ action: action }, payload || {});
+  const r = await fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // หลีกเลี่ยง CORS preflight
+    body: JSON.stringify(body)
+  });
   if (!r.ok) throw new Error('HTTP ' + r.status);
   return r.json();
 }
@@ -499,8 +535,6 @@ function go(id){
 /* ════════════════════════════════
    TOPICS
    ════════════════════════════════ */
-
-/* Silent background load for students */
 window.addEventListener('load', function(){ loadTopics(false); });
 
 async function loadTopics(forAdmin) {
@@ -510,24 +544,20 @@ async function loadTopics(forAdmin) {
     if (res && res.success) adminTopics = res.topics || [];
   } catch(e) { /* silent */ }
   if (forAdmin) renderTopicsList();
-  /* Re-render student subject if already open */
   if (document.getElementById('screenStudent').style.display !== 'none') renderSubjectInput();
 }
 
-/* ── Student subject input (dynamic) ── */
 function renderSubjectInput() {
   const area = document.getElementById('subjectArea');
   if (!area) return;
   if (adminTopics.length === 0) {
-    /* No topics set → plain text input */
     area.innerHTML =
       '<label class="field-label">📚 วิชา <span style="font-weight:400;color:#94a3b8;">(ไม่บังคับ)</span></label>' +
       '<input id="inputSubject" type="text" class="f-input"' +
       '  placeholder="เช่น ภาษาอังกฤษ, คณิตศาสตร์, ฟิสิกส์..." maxlength="100">';
   } else {
-    /* Topics exist → dropdown */
     var opts = adminTopics.map(function(t){
-      return '<option value="' + esc(t) + '">' + esc(t) + '</option>';
+      return '<option value="' + escAttr(t) + '">' + esc(t) + '</option>';
     }).join('');
     area.innerHTML =
       '<label class="field-label">📚 วิชา / หัวข้อ</label>' +
@@ -561,7 +591,7 @@ function getSubjectValue() {
   return inp2 ? inp2.value.trim() : '';
 }
 
-/* ── Topics admin management ── */
+/* ── Admin: add / edit / remove topics (client-side list, then save) ── */
 function renderTopicsList() {
   var el = document.getElementById('topicsList');
   if (!el) return;
@@ -571,11 +601,35 @@ function renderTopicsList() {
     return;
   }
   el.innerHTML = adminTopics.map(function(t, i){
-    return '<div class="topic-pill">' +
+    return '<div class="topic-pill" id="topicPill-' + i + '">' +
              '<span class="topic-pill-lbl">📌 ' + esc(t) + '</span>' +
+             '<button class="btn-edit-topic" onclick="startEditTopic(' + i + ')" title="แก้ไข">✏️</button>' +
              '<button class="btn-rm-topic" onclick="removeTopic(' + i + ')" title="ลบ">✕</button>' +
            '</div>';
   }).join('');
+}
+
+function startEditTopic(idx) {
+  var pill = document.getElementById('topicPill-' + idx);
+  if (!pill) return;
+  var current = adminTopics[idx];
+  pill.innerHTML =
+    '<input type="text" class="f-input" id="editTopicInput-' + idx + '" value="' + escAttr(current) + '" ' +
+    'style="flex:1;padding:6px 10px;font-size:0.85rem;" maxlength="80" ' +
+    'onkeydown="if(event.key===\'Enter\'){confirmEditTopic(' + idx + ');} if(event.key===\'Escape\'){renderTopicsList();}">' +
+    '<button class="btn-edit-topic" style="background:#dcfce7;color:#16a34a;" onclick="confirmEditTopic(' + idx + ')" title="ยืนยัน">✓</button>' +
+    '<button class="btn-rm-topic" onclick="renderTopicsList()" title="ยกเลิก">✕</button>';
+  var inp = document.getElementById('editTopicInput-' + idx);
+  inp.focus(); inp.select();
+}
+
+function confirmEditTopic(idx) {
+  var inp = document.getElementById('editTopicInput-' + idx);
+  if (!inp) return;
+  var val = (inp.value || '').trim();
+  if (!val) { sw('warning', 'กรอกข้อมูล', 'กรุณาพิมพ์ชื่อหัวข้อ'); return; }
+  adminTopics[idx] = val;
+  renderTopicsList();
 }
 
 function addTopic() {
@@ -600,9 +654,11 @@ async function saveTopicsToGAS() {
   var orig = btn.textContent;
   btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...';
   try {
-    var res = await apiGet({ action: 'saveTopics', topics: JSON.stringify(adminTopics) });
+    var res = await apiPost('saveTopics', { topics: adminTopics });
     btn.disabled = false; btn.textContent = orig;
     if (res && res.success) {
+      if (res.topics) adminTopics = res.topics;
+      renderTopicsList();
       Swal.fire({ toast:true, position:'top-end', icon:'success',
         title:'บันทึกหัวข้อแล้ว ✅', showConfirmButton:false,
         timer:2200, background:'#fff', color:'#0f172a' });
@@ -629,6 +685,43 @@ function updateCount(){
   document.getElementById('charCount').textContent = document.getElementById('inputMessage').value.length;
 }
 
+/* ── Image upload ── */
+function handleImageSelect(ev){
+  var file = ev.target.files && ev.target.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { sw('warning','ไฟล์ไม่ถูกต้อง','กรุณาเลือกไฟล์รูปภาพ'); return; }
+  var reader = new FileReader();
+  reader.onload = function(e){
+    resizeImage(e.target.result, 1280, 0.75, function(resizedDataUrl){
+      pendingImage = resizedDataUrl;
+      document.getElementById('imagePreview').src = resizedDataUrl;
+      document.getElementById('imagePreviewWrap').style.display = 'block';
+    });
+  };
+  reader.onerror = function(){ sw('error','อ่านไฟล์ไม่สำเร็จ','กรุณาลองใหม่'); };
+  reader.readAsDataURL(file);
+}
+
+function resizeImage(dataUrl, maxW, quality, cb){
+  var img = new Image();
+  img.onload = function(){
+    var w = img.width, h = img.height;
+    if (w > maxW) { h = Math.round(h * (maxW / w)); w = maxW; }
+    var canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    cb(canvas.toDataURL('image/jpeg', quality));
+  };
+  img.onerror = function(){ sw('error','รูปภาพเสียหาย','กรุณาเลือกรูปอื่น'); };
+  img.src = dataUrl;
+}
+
+function removeImage(){
+  pendingImage = null;
+  document.getElementById('inputImage').value = '';
+  document.getElementById('imagePreviewWrap').style.display = 'none';
+}
+
 async function submitFeedback(){
   var message = document.getElementById('inputMessage').value.trim();
   var subject = getSubjectValue();
@@ -636,7 +729,12 @@ async function submitFeedback(){
   var btn = document.getElementById('btnSubmit');
   btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...';
   try {
-    var res = await apiGet({ action:'save', subject:subject, mood:selectedMood, message:message });
+    var res = await apiPost('save', {
+      subject: subject,
+      mood: selectedMood,
+      message: message,
+      image: pendingImage || ''
+    });
     btn.disabled = false; btn.textContent = '📩 ส่งความรู้สึก';
     if (res && res.success){
       await Swal.fire({ icon:'success', title:'ขอบคุณมากเลย! 🙏',
@@ -646,6 +744,7 @@ async function submitFeedback(){
       document.getElementById('charCount').textContent = '0';
       document.querySelectorAll('.mood-btn').forEach(function(b){ b.classList.remove('selected'); });
       selectedMood = '';
+      removeImage();
       go('screenHome');
     } else { sw('error','เกิดข้อผิดพลาด',(res&&res.error)||'กรุณาลองใหม่'); }
   } catch(e){
@@ -662,14 +761,13 @@ function verifyAdmin(){
     document.getElementById('adminPwd').value = '';
     go('screenAdmin');
     loadAll();
-    loadTopics(true);   /* load topics for admin panel */
+    loadTopics(true);
   } else { sw('error','รหัสผ่านไม่ถูกต้อง','กรุณาลองใหม่อีกครั้ง'); }
 }
 
 async function loadAll(){
   set('feedbackList', mkSpin('กำลังโหลดข้อมูล...'));
   set('statsBar',''); set('totalLabel','กำลังโหลด...');
-  hide('aiResult'); hide('aiLoader');
   document.getElementById('filterMood').value = '';
   try {
     var res = await apiGet({ action:'getFeedback' });
@@ -718,6 +816,11 @@ function renderFeedback(data){
       : '';
     var sTag = f.subject ? '<span class="tag tag-subj">📚 '+esc(f.subject)+'</span>' : '';
     var tsSafe = String(f.timestamp||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    var imgHtml = f.imageThumb
+      ? '<a href="'+f.imageUrl+'" target="_blank" rel="noopener">' +
+        '<img src="'+f.imageThumb+'" alt="แนบรูป" style="max-width:160px;border-radius:8px;margin-top:10px;display:block;border:1px solid #dbeafe;">' +
+        '</a>'
+      : '';
     return '<div class="f-card">' +
       '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:9px;">' +
         '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + mTag + sTag + '</div>' +
@@ -727,6 +830,7 @@ function renderFeedback(data){
         '</div>' +
       '</div>' +
       '<p style="color:#0f172a;font-size:0.92rem;line-height:1.65;margin:0;">' + esc(f.message) + '</p>' +
+      imgHtml +
     '</div>';
   }).join(''));
 }
@@ -785,25 +889,89 @@ async function confirmDeleteFeedback(ts) {
 }
 
 /* ════════════════════════════════
-   AI SUMMARY
+   EXPORT TO WORD (.docx) — โหลดไลบรารีตอนใช้งานจริง
    ════════════════════════════════ */
-async function requestAI(){
-  if (!allFeedback.length){ sw('warning','ไม่มีข้อมูล','ยังไม่มีความรู้สึกนักเรียนเข้ามา'); return; }
-  show('aiLoader'); hide('aiResult');
-  document.getElementById('btnAI').disabled = true;
-  document.getElementById('btnAI').textContent = '⏳ กำลังวิเคราะห์...';
+let docxLibLoaded = false;
+function loadDocxLib(){
+  return new Promise(function(resolve, reject){
+    if (docxLibLoaded && window.docx) { resolve(); return; }
+    var s = document.createElement('script');
+    s.src = 'https://unpkg.com/docx@8.5.0/build/index.js';
+    s.onload = function(){ docxLibLoaded = true; resolve(); };
+    s.onerror = function(){ reject(new Error('โหลดไลบรารี Word ไม่สำเร็จ ตรวจสอบอินเทอร์เน็ต')); };
+    document.head.appendChild(s);
+  });
+}
+
+async function exportToWord(){
+  var m = document.getElementById('filterMood').value;
+  var dataToExport = m ? allFeedback.filter(function(f){ return f.mood === m; }) : allFeedback;
+  if (!dataToExport.length){ sw('warning','ไม่มีข้อมูล','ไม่มีความคิดเห็นให้ส่งออกในตอนนี้'); return; }
+
+  var btn = document.getElementById('btnExportWord');
+  var orig = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ กำลังสร้างไฟล์...';
+
   try {
-    var res = await apiGet({ action:'aiSummary' });
-    hide('aiLoader');
-    document.getElementById('btnAI').disabled = false;
-    document.getElementById('btnAI').textContent = '✨ วิเคราะห์ความรู้สึก';
-    if (res && res.success){ show('aiResult'); set('aiText', renderMD(res.summary)); }
-    else { sw('error','ไม่สามารถสรุปได้',(res&&res.error)||'กรุณาลองใหม่'); }
-  } catch(e){
-    hide('aiLoader');
-    document.getElementById('btnAI').disabled = false;
-    document.getElementById('btnAI').textContent = '✨ วิเคราะห์ความรู้สึก';
-    sw('error','เกิดข้อผิดพลาด','ไม่สามารถเชื่อมต่อ GAS ได้');
+    await loadDocxLib();
+    var D = window.docx;
+    var children = [];
+
+    children.push(new D.Paragraph({
+      text: 'รายงานความคิดเห็นนักเรียน',
+      heading: D.HeadingLevel.TITLE,
+      alignment: D.AlignmentType.CENTER
+    }));
+    children.push(new D.Paragraph({
+      alignment: D.AlignmentType.CENTER,
+      children: [ new D.TextRun({ text: 'โรงเรียนธนาคารออมสิน · พิมพ์เมื่อ ' + new Date().toLocaleString('th-TH'), color: '64748B', size: 20 }) ]
+    }));
+    children.push(new D.Paragraph({ text: '' }));
+    children.push(new D.Paragraph({
+      children: [ new D.TextRun({ text: 'จำนวนทั้งหมด: ' + dataToExport.length + ' รายการ', bold: true }) ]
+    }));
+    children.push(new D.Paragraph({ text: '' }));
+
+    dataToExport.forEach(function(f, idx){
+      var headerParts = [];
+      if (f.subject) headerParts.push('📚 ' + f.subject);
+      if (f.mood) headerParts.push(f.mood);
+      children.push(new D.Paragraph({
+        heading: D.HeadingLevel.HEADING_2,
+        spacing: { before: 240 },
+        text: (idx + 1) + '. ' + (headerParts.length ? headerParts.join('  ·  ') : 'ไม่ระบุวิชา')
+      }));
+      children.push(new D.Paragraph({
+        children: [ new D.TextRun({ text: 'เวลา: ' + f.timestamp, italics: true, color: '94A3B8', size: 18 }) ]
+      }));
+      children.push(new D.Paragraph({ text: f.message, spacing: { after: 80 } }));
+      if (f.imageUrl) {
+        children.push(new D.Paragraph({
+          children: [ new D.ExternalHyperlink({
+            link: f.imageUrl,
+            children: [ new D.TextRun({ text: '📎 ดูรูปภาพแนบ', style: 'Hyperlink' }) ]
+          }) ]
+        }));
+      }
+      children.push(new D.Paragraph({ text: '' }));
+    });
+
+    var doc = new D.Document({ sections: [{ children: children }] });
+    var blob = await D.Packer.toBlob(doc);
+
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'ความคิดเห็นนักเรียน_' + new Date().toISOString().slice(0,10) + '.docx';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+
+  } catch (e) {
+    sw('error', 'สร้างไฟล์ไม่สำเร็จ', e.message || 'กรุณาลองใหม่');
+  } finally {
+    btn.disabled = false; btn.textContent = orig;
   }
 }
 
@@ -811,7 +979,7 @@ async function requestAI(){
    HELPERS
    ════════════════════════════════ */
 function esc(t){ return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>'); }
-function renderMD(t){ return String(t||'').replace(/\*\*(.*?)\*\*/g,'<strong style="color:#1d4ed8;">$1</strong>').replace(/\n/g,'<br>'); }
+function escAttr(t){ return String(t||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/'/g,'&#39;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function mkSpin(m){ return '<div style="text-align:center;padding:32px;color:#94a3b8;"><div class="spinner"></div><p style="margin-top:12px;font-size:0.88rem;">'+m+'</p></div>'; }
 function err2html(m){ return '<p style="color:#ef4444;text-align:center;padding:20px;font-size:0.88rem;">❌ '+esc(m)+'</p>'; }
 function set(id,h){ document.getElementById(id).innerHTML = h; }
