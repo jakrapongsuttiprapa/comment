@@ -5,12 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
   <title>ความรู้สึกต่อการเรียนการสอน — โรงเรียนธนาคารออมสิน</title>
 
-  <!-- ── Fonts: preconnect ทั้งคู่ + เฉพาะ weight ที่ใช้จริง ── -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700;800&display=swap" rel="stylesheet">
-
-  <!-- ── SweetAlert2 เท่านั้น (ลบ Tailwind CDN ออก ไม่ได้ใช้) ── -->
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <style>
@@ -19,43 +16,29 @@
     body {
       font-family: 'Sarabun', 'Segoe UI', system-ui, sans-serif;
       min-height: 100vh;
-      /* ลบ background-attachment:fixed ออก → iOS Safari render พัง */
       background: url('https://i.postimg.cc/TYwtBQbC/Chat-GPT-Image-Jun-14-2026-09-27-59-PM.png')
                   center / cover no-repeat;
       background-color: #0c1a3a;
     }
 
-    /* ── Screens ── */
-    .screen {
-      display: none;
-      min-height: 100vh;
-      min-height: 100dvh; /* mobile viewport ไม่รวม address bar */
-    }
+    .screen { display: none; min-height: 100vh; min-height: 100dvh; }
 
-    /* ── White card ── */
     .wcard {
       background: rgba(255,255,255,0.97);
-      backdrop-filter: blur(24px);
-      -webkit-backdrop-filter: blur(24px);
-      border: 1px solid rgba(255,255,255,0.9);
-      border-radius: 22px;
+      backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(255,255,255,0.9); border-radius: 22px;
       box-shadow: 0 24px 64px rgba(10,30,80,0.22), 0 4px 16px rgba(29,78,216,0.1);
     }
 
-    /* ── Hero overlay ── */
     .hero-overlay {
       position: absolute; inset: 0;
       background: linear-gradient(135deg,
-        rgba(10,25,75,0.78)   0%,
-        rgba(29,78,216,0.60) 55%,
-        rgba(14,165,233,0.48) 100%);
+        rgba(10,25,75,0.78) 0%, rgba(29,78,216,0.60) 55%, rgba(14,165,233,0.48) 100%);
       z-index: 0;
     }
 
-    /* ── Inputs ── */
     .f-input {
-      width: 100%; background: #f0f7ff;
-      border: 1.5px solid #bfdbfe; border-radius: 10px;
+      width: 100%; background: #f0f7ff; border: 1.5px solid #bfdbfe; border-radius: 10px;
       padding: 12px 16px; color: #0f172a; font-size: 0.95rem;
       outline: none; transition: all 0.2s; font-family: inherit;
     }
@@ -64,7 +47,6 @@
     select.f-input option { background: white; color: #0f172a; }
     textarea.f-input { resize: vertical; min-height: 150px; line-height: 1.7; }
 
-    /* ── Mood buttons ── */
     .mood-btn {
       flex: 1; display: flex; flex-direction: column; align-items: center;
       gap: 5px; padding: 12px 5px; border-radius: 12px;
@@ -77,14 +59,11 @@
     .mood-icon { font-size: 1.75rem; line-height: 1; }
     .mood-lbl { font-size: 0.61rem; color: #475569; text-align: center; font-weight: 600; line-height: 1.3; }
 
-    /* ── Labels ── */
     .field-label { color: #1e40af; font-size: 0.85rem; font-weight: 700; display: block; margin-bottom: 8px; }
 
-    /* ── Buttons ── */
     .btn {
-      display: block; width: 100%; padding: 15px 20px;
-      border-radius: 12px; border: none; font-size: 1rem;
-      font-weight: 700; font-family: inherit; cursor: pointer;
+      display: block; width: 100%; padding: 15px 20px; border-radius: 12px; border: none;
+      font-size: 1rem; font-weight: 700; font-family: inherit; cursor: pointer;
       transition: all 0.22s; text-align: center; line-height: 1.3;
     }
     .btn:hover:not(:disabled) { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.22); }
@@ -94,48 +73,38 @@
     .btn-outline-w { background: transparent; color: white; border: 2px solid rgba(255,255,255,0.65); }
     .btn-outline-w:hover { background: rgba(255,255,255,0.14); }
     .btn-ghost-dk {
-      background: #eff6ff; color: #1e40af;
-      border: 1.5px solid #bfdbfe; border-radius: 10px;
+      background: #eff6ff; color: #1e40af; border: 1.5px solid #bfdbfe; border-radius: 10px;
       padding: 9px 18px; cursor: pointer; font-size: 0.88rem;
       font-family: inherit; font-weight: 600; transition: all 0.2s; width: auto;
     }
     .btn-ghost-dk:hover { background: #dbeafe; border-color: #93c5fd; }
     .btn-ghost-lt {
-      background: rgba(255,255,255,0.14); color: white;
-      border: 1px solid rgba(255,255,255,0.35); border-radius: 10px;
-      padding: 9px 18px; cursor: pointer; font-size: 0.88rem;
+      background: rgba(255,255,255,0.14); color: white; border: 1px solid rgba(255,255,255,0.35);
+      border-radius: 10px; padding: 9px 18px; cursor: pointer; font-size: 0.88rem;
       font-family: inherit; transition: all 0.2s; width: auto;
     }
     .btn-ghost-lt:hover { background: rgba(255,255,255,0.24); }
 
-    /* ── Chips ── */
     .chip {
-      display: inline-flex; align-items: center; gap: 5px;
-      background: #eff6ff; border: 1px solid #bfdbfe;
-      border-radius: 20px; padding: 5px 14px;
+      display: inline-flex; align-items: center; gap: 5px; background: #eff6ff;
+      border: 1px solid #bfdbfe; border-radius: 20px; padding: 5px 14px;
       color: #1e40af; font-size: 0.82rem; font-weight: 700;
     }
 
-    /* ── Feedback card ── */
     .f-card {
-      background: #f8fbff; border: 1px solid #dbeafe;
-      border-radius: 12px; padding: 14px 16px;
-      margin-bottom: 10px; transition: all 0.2s;
+      background: #f8fbff; border: 1px solid #dbeafe; border-radius: 12px;
+      padding: 14px 16px; margin-bottom: 10px; transition: all 0.2s;
     }
     .f-card:hover { background: #eff6ff; border-color: #bfdbfe; }
-
     .tag { display: inline-flex; align-items: center; gap: 5px; border-radius: 20px; padding: 3px 11px; font-size: 0.78rem; font-weight: 600; }
     .tag-subj { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
 
-    /* ── Spinner ── */
     .spinner {
-      width: 32px; height: 32px;
-      border: 3px solid #bfdbfe; border-top-color: #3b82f6;
+      width: 32px; height: 32px; border: 3px solid #bfdbfe; border-top-color: #3b82f6;
       border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto;
     }
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* ── Password input ── */
     .pwd-input {
       background: #f0f7ff; border: 2px solid #bfdbfe; border-radius: 12px;
       padding: 18px; text-align: center; font-size: 2rem;
@@ -145,122 +114,93 @@
     .pwd-input:focus { border-color: #3b82f6; background: white; box-shadow: 0 0 0 3px rgba(59,130,246,0.13); }
     .pwd-input::placeholder { letter-spacing: 3px; font-size: 0.88rem; color: #94a3b8; }
 
-    /* ── AI box ── */
     .ai-box {
-      background: #f0f7ff; border: 1px solid #bfdbfe;
-      border-radius: 14px; padding: 20px;
-      color: #0f172a; font-size: 0.9rem; line-height: 1.85; margin-top: 14px;
+      background: #f0f7ff; border: 1px solid #bfdbfe; border-radius: 14px;
+      padding: 20px; color: #0f172a; font-size: 0.9rem; line-height: 1.85; margin-top: 14px;
     }
 
-    /* ── Trust badge ── */
-    .trust-badge {
-      display: flex; align-items: center; gap: 6px;
-      color: rgba(255,255,255,0.78); font-size: 0.78rem; font-weight: 500;
-    }
-
-    /* ── Divider ── */
+    .trust-badge { display: flex; align-items: center; gap: 6px; color: rgba(255,255,255,0.78); font-size: 0.78rem; font-weight: 500; }
     .divider { height: 1px; background: #e0f0fe; margin: 18px 0; }
-
-    /* ── Admin section ── */
     .s-title { color: #0f172a; font-size: 1rem; font-weight: 700; margin-bottom: 3px; }
     .s-sub   { color: #64748b; font-size: 0.78rem; }
 
-    /* ── Fade animation ── */
     @keyframes fadeUp { from { opacity:0; transform:translateY(18px); } to { opacity:1; transform:translateY(0); } }
     .fu  { animation: fadeUp 0.5s ease both; }
     .fu2 { animation: fadeUp 0.5s 0.08s ease both; }
     .fu3 { animation: fadeUp 0.5s 0.16s ease both; }
     .fu4 { animation: fadeUp 0.5s 0.24s ease both; }
 
-    /* ════════════════════════════════════════
-       MOBILE  (≤ 860px)
-       ════════════════════════════════════════ */
-    @media (max-width: 860px) {
-      /* ── ลบ background image บน mobile ── */
-      body {
-        background-image: none !important;
-        background-color: #050d24 !important;
-      }
+    /* ══════════════════════════════
+       NEW: Topic Pills & Delete Btn
+       ══════════════════════════════ */
+    .topic-pill {
+      display: flex; align-items: center; gap: 8px;
+      padding: 9px 14px; background: #f0f7ff;
+      border: 1.5px solid #bfdbfe; border-radius: 10px; margin-bottom: 6px;
+    }
+    .topic-pill-lbl {
+      flex: 1; color: #1e40af; font-size: 0.88rem; font-weight: 600;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0;
+    }
+    .btn-rm-topic {
+      width: 22px; height: 22px; border-radius: 50%; border: none;
+      background: #fee2e2; color: #ef4444; cursor: pointer; font-size: 0.72rem;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+      transition: all 0.18s; font-weight: 700; line-height: 1;
+    }
+    .btn-rm-topic:hover { background: #ef4444; color: white; }
 
-      /* ── screenHome: gradient เต็มจอแทน background image ── */
+    .btn-del-fb {
+      width: 26px; height: 26px; border-radius: 7px; flex-shrink: 0;
+      border: 1px solid #fecdd3; background: transparent; color: #fca5a5;
+      cursor: pointer; font-size: 0.8rem;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.18s;
+    }
+    .btn-del-fb:hover { background: #fee2e2; border-color: #f87171; color: #dc2626; }
+
+    /* ══════════════════════════════════════
+       MOBILE  (≤ 860px)
+       ══════════════════════════════════════ */
+    @media (max-width: 860px) {
+      body { background-image: none !important; background-color: #050d24 !important; }
       #screenHome {
         background: linear-gradient(160deg,
           #060e28 0%, #0c1d52 28%, #1a3a9f 58%, #1d64d8 82%, #2980b9 100%) !important;
-        min-height: 100vh !important;
-        min-height: 100dvh !important;
+        min-height: 100vh !important; min-height: 100dvh !important;
       }
-
-      /* ── hero overlay: เบาลงบน mobile เพราะมี gradient แล้ว ── */
-      #screenHome .hero-overlay {
-        background: linear-gradient(180deg,
-          rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.05) 100%) !important;
-      }
-
-      /* Card radius */
+      #screenHome .hero-overlay { background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.05) 100%) !important; }
       .wcard { border-radius: 16px; }
-
-      /* Hero nav bar */
       .nav-bar { padding: 14px 18px !important; }
-
-      /* ซ่อน banner ที่ปูเต็มจอ */
       .hero-bg-img { display: none !important; }
-
-      /* ซ่อน right-column image (desktop) */
       .hero-img { display: none !important; }
-
-      /* แสดง banner แบบ inline บนมือถือ */
       .hero-img-mob { display: block !important; }
-
-      /* Hero inner — single column */
-      .hero-inner {
-        flex-direction: column !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 0 !important;
-      }
-
-      /* Hero center area */
+      .hero-inner { flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 0 !important; }
       .hero-center { padding: 20px 20px 28px !important; }
-
-      /* Hero headline */
       .hero-h1 { font-size: 1.75rem !important; }
-
-      /* Hero buttons — stack, full width */
-      .hero-btns {
-        flex-direction: column !important;
-        align-items: center !important;
-        width: 100% !important;
-      }
-      .hero-btns .btn {
-        min-width: 0 !important;
-        max-width: 320px !important;
-        width: 100% !important;
-      }
-
-      /* Mood buttons */
+      .hero-btns { flex-direction: column !important; align-items: center !important; width: 100% !important; }
+      .hero-btns .btn { min-width: 0 !important; max-width: 320px !important; width: 100% !important; }
       .mood-icon { font-size: 1.45rem; }
       .mood-lbl  { font-size: 0.55rem; }
-
-      /* Trust badges */
       .trust-row { gap: 12px !important; }
     }
 
-    /* ── JS is-mobile failsafe ── */
-    body.is-mobile                     { background-image: none !important; background-color: #050d24 !important; }
-    body.is-mobile #screenHome         { background: linear-gradient(160deg, #060e28 0%, #0c1d52 28%, #1a3a9f 58%, #1d64d8 82%, #2980b9 100%) !important; min-height: 100vh !important; min-height: 100dvh !important; }
+    /* JS is-mobile failsafe */
+    body.is-mobile { background-image: none !important; background-color: #050d24 !important; }
+    body.is-mobile #screenHome { background: linear-gradient(160deg, #060e28 0%, #0c1d52 28%, #1a3a9f 58%, #1d64d8 82%, #2980b9 100%) !important; min-height: 100vh !important; min-height: 100dvh !important; }
     body.is-mobile #screenHome .hero-overlay { background: linear-gradient(180deg, rgba(0,0,0,0.25) 0%, rgba(0,0,0,0.05) 100%) !important; }
-    body.is-mobile .nav-bar            { padding: 14px 18px !important; }
-    body.is-mobile .hero-bg-img        { display: none !important; }
-    body.is-mobile .hero-img           { display: none !important; }
-    body.is-mobile .hero-img-mob       { display: block !important; }
-    body.is-mobile .hero-inner         { flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 0 !important; }
-    body.is-mobile .hero-center        { padding: 20px 20px 28px !important; }
-    body.is-mobile .hero-h1            { font-size: 1.75rem !important; }
-    body.is-mobile .hero-btns          { flex-direction: column !important; align-items: center !important; width: 100% !important; }
-    body.is-mobile .hero-btns .btn     { min-width: 0 !important; max-width: 320px !important; width: 100% !important; }
-    body.is-mobile .mood-icon          { font-size: 1.45rem; }
-    body.is-mobile .mood-lbl           { font-size: 0.55rem; }
-    body.is-mobile .wcard              { border-radius: 16px; }
+    body.is-mobile .nav-bar { padding: 14px 18px !important; }
+    body.is-mobile .hero-bg-img { display: none !important; }
+    body.is-mobile .hero-img { display: none !important; }
+    body.is-mobile .hero-img-mob { display: block !important; }
+    body.is-mobile .hero-inner { flex-direction: column !important; align-items: center !important; justify-content: center !important; gap: 0 !important; }
+    body.is-mobile .hero-center { padding: 20px 20px 28px !important; }
+    body.is-mobile .hero-h1 { font-size: 1.75rem !important; }
+    body.is-mobile .hero-btns { flex-direction: column !important; align-items: center !important; width: 100% !important; }
+    body.is-mobile .hero-btns .btn { min-width: 0 !important; max-width: 320px !important; width: 100% !important; }
+    body.is-mobile .mood-icon { font-size: 1.45rem; }
+    body.is-mobile .mood-lbl  { font-size: 0.55rem; }
+    body.is-mobile .wcard { border-radius: 16px; }
   </style>
 </head>
 <body>
@@ -271,20 +211,15 @@
 <div id="screenHome" class="screen"
      style="display:flex; flex-direction:column; position:relative;">
 
-  <!-- Banner image เต็มจอ (desktop only) -->
   <img class="hero-bg-img"
        src="https://i.postimg.cc/hGWLp0gk/48D93FC5-BDDD-424C-8F29-482F5EE3E55C.png"
        alt="" aria-hidden="true" fetchpriority="high"
        style="position:absolute; inset:0; width:100%; height:100%; object-fit:cover; object-position:center; display:block;">
-
-  <!-- Blue overlay -->
   <div class="hero-overlay"></div>
 
-  <!-- Nav bar -->
   <div class="nav-bar" style="position:relative; z-index:1; display:flex; align-items:center; justify-content:space-between; padding:20px 32px;">
     <div style="display:flex; align-items:center; gap:12px;">
-      <img src="https://i.postimg.cc/ydtX6mMS/logo.png"
-           alt="โรงเรียนธนาคารออมสิน"
+      <img src="https://i.postimg.cc/ydtX6mMS/logo.png" alt="โรงเรียนธนาคารออมสิน"
            width="44" height="44"
            style="height:44px; width:auto; object-fit:contain; filter:drop-shadow(0 2px 6px rgba(0,0,0,0.3));"
            onerror="this.style.display='none'">
@@ -298,13 +233,10 @@
     </div>
   </div>
 
-  <!-- Hero center -->
   <div class="hero-center" style="position:relative; z-index:1; flex:1; display:flex; align-items:center; justify-content:center; padding:32px 40px;">
     <div class="hero-inner" style="display:flex; align-items:center; gap:52px; max-width:1000px; width:100%;">
 
-      <!-- Text + CTA -->
       <div style="flex:1; min-width:0; text-align:center;">
-
         <div class="fu" style="display:inline-flex; align-items:center; gap:8px; background:rgba(59,130,246,0.25); border:1px solid rgba(147,197,253,0.45); border-radius:20px; padding:7px 18px; margin-bottom:24px; color:rgba(255,255,255,0.9); font-size:0.8rem; font-weight:600;">
           ✨ พื้นที่ปลอดภัยสำหรับนักเรียน ม.4 – ม.6
         </div>
@@ -314,10 +246,9 @@
           <span style="color:#7dd3fc;">ต่อการเรียนการสอน</span>
         </h1>
 
-        <!-- Mobile-only banner image (แสดงระหว่าง headline กับ subtitle) -->
         <div class="hero-img-mob" style="display:none; margin:18px auto 20px; max-width:300px; width:100%;">
           <img src="https://i.postimg.cc/hGWLp0gk/48D93FC5-BDDD-424C-8F29-482F5EE3E55C.png"
-               alt="hero banner โรงเรียนธนาคารออมสิน" loading="lazy"
+               alt="hero banner" loading="lazy"
                style="width:100%; height:auto; border-radius:16px; box-shadow:0 16px 48px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.2); display:block;">
         </div>
 
@@ -343,14 +274,11 @@
           <div class="trust-badge">🛡️ ข้อมูลปลอดภัย</div>
           <div class="trust-badge">📊 ครูวิเคราะห์ด้วย AI</div>
         </div>
-
       </div>
 
-      <!-- Hero image (desktop only — hidden on mobile via CSS) -->
       <div class="hero-img fu3" style="flex:0 0 420px;">
         <img src="https://i.postimg.cc/hGWLp0gk/48D93FC5-BDDD-424C-8F29-482F5EE3E55C.png"
-             alt="hero banner โรงเรียนธนาคารออมสิน"
-             loading="lazy" decoding="async"
+             alt="hero banner" loading="lazy" decoding="async"
              style="width:100%; height:auto; border-radius:20px; box-shadow:0 32px 80px rgba(0,0,0,0.45), 0 8px 24px rgba(0,0,0,0.25); display:block;"
              onerror="this.parentElement.style.display='none'">
       </div>
@@ -358,11 +286,8 @@
     </div>
   </div>
 
-  <!-- Footer -->
   <div style="position:relative; z-index:1; text-align:center; padding:14px 20px; border-top:1px solid rgba(255,255,255,0.1); background:rgba(0,0,0,0.2);">
-    <p style="color:rgba(255,255,255,0.42); font-size:0.7rem;">
-      ระบบรับความคิดเห็นนักเรียน · โรงเรียนธนาคารออมสิน · KRUOAT
-    </p>
+    <p style="color:rgba(255,255,255,0.42); font-size:0.7rem;">ระบบรับความคิดเห็นนักเรียน · โรงเรียนธนาคารออมสิน · KRUOAT</p>
   </div>
 </div>
 
@@ -383,11 +308,8 @@
 
   <div class="wcard" style="width:100%; max-width:520px; padding:24px 22px;">
 
-    <div style="margin-bottom:18px;">
-      <label class="field-label">📚 วิชา <span style="font-weight:400; color:#94a3b8;">(ไม่บังคับ)</span></label>
-      <input id="inputSubject" type="text" class="f-input"
-             placeholder="เช่น ภาษาอังกฤษ, คณิตศาสตร์, ฟิสิกส์..." maxlength="100">
-    </div>
+    <!-- ── Subject: rendered by renderSubjectInput() ── -->
+    <div id="subjectArea" style="margin-bottom:18px;"></div>
 
     <div style="margin-bottom:18px;">
       <label class="field-label">🎭 ความรู้สึกตอนนี้ <span style="font-weight:400; color:#94a3b8;">(ไม่บังคับ)</span></label>
@@ -411,7 +333,6 @@
     </div>
 
     <div class="divider"></div>
-
     <button id="btnSubmit" class="btn btn-blue" onclick="submitFeedback()">📩 ส่งความรู้สึก</button>
     <p style="color:#94a3b8; font-size:0.72rem; text-align:center; margin-top:12px;">
       🔒 ครูจะไม่รู้ว่าใครส่ง — ข้อมูลทั้งหมดเป็นแบบนิรนาม
@@ -447,10 +368,10 @@
 <!-- ╔══════════════════════════════╗
      ║  SCREEN 4 : ADMIN          ║
      ╚══════════════════════════════╝ -->
-<div id="screenAdmin" class="screen"
-     style="display:none; padding:20px 14px;">
+<div id="screenAdmin" class="screen" style="display:none; padding:20px 14px;">
   <div style="max-width:680px; width:100%; margin:0 auto;">
 
+    <!-- Stats card -->
     <div class="wcard" style="padding:20px 22px; margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px;">
         <div>
@@ -466,6 +387,33 @@
       <div id="statsBar" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;"></div>
     </div>
 
+    <!-- ══ NEW: Topics Management Card ══ -->
+    <div class="wcard" style="padding:20px 22px; margin-bottom:12px;">
+      <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:14px;">
+        <div>
+          <h3 class="s-title">📌 หัวข้อสำหรับนักเรียน</h3>
+          <p class="s-sub">นักเรียนจะเลือกหัวข้อนี้ได้จากฟอร์มแทนการพิมพ์เอง</p>
+        </div>
+        <button id="btnSaveTopics" class="btn btn-blue"
+                style="width:auto; padding:9px 18px; font-size:0.85rem; white-space:nowrap; border-radius:10px;"
+                onclick="saveTopicsToGAS()">
+          💾 บันทึกหัวข้อ
+        </button>
+      </div>
+      <!-- Add input row -->
+      <div style="display:flex; gap:8px; margin-bottom:12px;">
+        <input id="newTopicInput" type="text" class="f-input" style="flex:1; padding:10px 14px;"
+               placeholder="พิมพ์ชื่อวิชา / หัวข้อ แล้วกด Enter หรือ + เพิ่ม"
+               maxlength="80" onkeydown="if(event.key==='Enter') addTopic()">
+        <button class="btn-ghost-dk" style="white-space:nowrap;" onclick="addTopic()">+ เพิ่ม</button>
+      </div>
+      <!-- Topics list -->
+      <div id="topicsList">
+        <p style="color:#94a3b8; font-size:0.82rem; text-align:center; padding:12px 0;">กำลังโหลด...</p>
+      </div>
+    </div>
+
+    <!-- AI Summary card -->
     <div class="wcard" style="padding:20px 22px; margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap:10px; margin-bottom:6px;">
         <div>
@@ -490,6 +438,7 @@
       </div>
     </div>
 
+    <!-- Feedback list card -->
     <div class="wcard" style="padding:20px 22px; margin-bottom:12px;">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
         <h3 class="s-title">💬 ความรู้สึกทั้งหมด</h3>
@@ -521,6 +470,10 @@
 <script>
 const GAS_URL   = 'https://script.google.com/macros/s/AKfycbyiNJOfOmRQuORmE6j4LrsJqhdFLEc0cAMgWECnkQB2HbVns1o27UmTmx1QLKe3_y21/exec';
 const ADMIN_PWD = '7846';
+const DEL_PWD   = '1112';
+
+let adminTopics = [];
+let allFeedback = [];
 
 async function apiGet(p) {
   const r = await fetch(GAS_URL + '?' + new URLSearchParams(p).toString());
@@ -528,52 +481,170 @@ async function apiGet(p) {
   return r.json();
 }
 
-/* Mobile detection */
+/* ── Mobile detection ── */
 (function(){
   function c(){ document.body.classList.toggle('is-mobile', window.innerWidth <= 860); }
-  c();
-  window.addEventListener('resize', c);
+  c(); window.addEventListener('resize', c);
 })();
 
-/* Navigation */
+/* ── Navigation ── */
 const DISP = { screenHome:'flex', screenStudent:'flex', screenAdminLogin:'flex', screenAdmin:'block' };
 function go(id){
   document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
   document.getElementById(id).style.display = DISP[id] || 'flex';
   window.scrollTo(0, 0);
+  if (id === 'screenStudent') renderSubjectInput();
 }
 
-/* Mood */
-let selectedMood = '';
+/* ════════════════════════════════
+   TOPICS
+   ════════════════════════════════ */
+
+/* Silent background load for students */
+window.addEventListener('load', function(){ loadTopics(false); });
+
+async function loadTopics(forAdmin) {
+  if (forAdmin) set('topicsList', '<p style="color:#94a3b8;font-size:0.82rem;text-align:center;padding:12px 0;">กำลังโหลด...</p>');
+  try {
+    const res = await apiGet({ action: 'getTopics' });
+    if (res && res.success) adminTopics = res.topics || [];
+  } catch(e) { /* silent */ }
+  if (forAdmin) renderTopicsList();
+  /* Re-render student subject if already open */
+  if (document.getElementById('screenStudent').style.display !== 'none') renderSubjectInput();
+}
+
+/* ── Student subject input (dynamic) ── */
+function renderSubjectInput() {
+  const area = document.getElementById('subjectArea');
+  if (!area) return;
+  if (adminTopics.length === 0) {
+    /* No topics set → plain text input */
+    area.innerHTML =
+      '<label class="field-label">📚 วิชา <span style="font-weight:400;color:#94a3b8;">(ไม่บังคับ)</span></label>' +
+      '<input id="inputSubject" type="text" class="f-input"' +
+      '  placeholder="เช่น ภาษาอังกฤษ, คณิตศาสตร์, ฟิสิกส์..." maxlength="100">';
+  } else {
+    /* Topics exist → dropdown */
+    var opts = adminTopics.map(function(t){
+      return '<option value="' + esc(t) + '">' + esc(t) + '</option>';
+    }).join('');
+    area.innerHTML =
+      '<label class="field-label">📚 วิชา / หัวข้อ</label>' +
+      '<select id="subjectSelect" class="f-input" onchange="onSubjectChange(this)">' +
+        '<option value="">-- เลือกวิชา / หัวข้อ --</option>' +
+        opts +
+        '<option value="__other__">✏️ อื่นๆ (พิมพ์เอง)</option>' +
+      '</select>' +
+      '<input id="inputSubject" type="text" class="f-input"' +
+      '  style="display:none;margin-top:8px;" placeholder="พิมพ์วิชา/หัวข้อ..." maxlength="100">';
+  }
+}
+
+function onSubjectChange(sel) {
+  var inp = document.getElementById('inputSubject');
+  if (!inp) return;
+  if (sel.value === '__other__') { inp.style.display = 'block'; inp.focus(); }
+  else { inp.style.display = 'none'; inp.value = ''; }
+}
+
+function getSubjectValue() {
+  var sel = document.getElementById('subjectSelect');
+  if (sel) {
+    if (sel.value === '__other__') {
+      var inp = document.getElementById('inputSubject');
+      return inp ? inp.value.trim() : '';
+    }
+    return sel.value;
+  }
+  var inp2 = document.getElementById('inputSubject');
+  return inp2 ? inp2.value.trim() : '';
+}
+
+/* ── Topics admin management ── */
+function renderTopicsList() {
+  var el = document.getElementById('topicsList');
+  if (!el) return;
+  if (adminTopics.length === 0) {
+    el.innerHTML = '<p style="color:#94a3b8;font-size:0.82rem;text-align:center;padding:12px 0;">' +
+                   'ยังไม่มีหัวข้อ — นักเรียนจะพิมพ์วิชาได้เอง</p>';
+    return;
+  }
+  el.innerHTML = adminTopics.map(function(t, i){
+    return '<div class="topic-pill">' +
+             '<span class="topic-pill-lbl">📌 ' + esc(t) + '</span>' +
+             '<button class="btn-rm-topic" onclick="removeTopic(' + i + ')" title="ลบ">✕</button>' +
+           '</div>';
+  }).join('');
+}
+
+function addTopic() {
+  var inp = document.getElementById('newTopicInput');
+  var val = (inp.value || '').trim();
+  if (!val) return;
+  var dupe = adminTopics.some(function(t){ return t.toLowerCase() === val.toLowerCase(); });
+  if (dupe){ sw('warning','มีอยู่แล้ว','หัวข้อนี้อยู่ในรายการแล้ว'); return; }
+  adminTopics.push(val);
+  inp.value = '';
+  inp.focus();
+  renderTopicsList();
+}
+
+function removeTopic(idx) {
+  adminTopics.splice(idx, 1);
+  renderTopicsList();
+}
+
+async function saveTopicsToGAS() {
+  var btn = document.getElementById('btnSaveTopics');
+  var orig = btn.textContent;
+  btn.disabled = true; btn.textContent = '⏳ กำลังบันทึก...';
+  try {
+    var res = await apiGet({ action: 'saveTopics', topics: JSON.stringify(adminTopics) });
+    btn.disabled = false; btn.textContent = orig;
+    if (res && res.success) {
+      Swal.fire({ toast:true, position:'top-end', icon:'success',
+        title:'บันทึกหัวข้อแล้ว ✅', showConfirmButton:false,
+        timer:2200, background:'#fff', color:'#0f172a' });
+    } else {
+      sw('error','บันทึกไม่สำเร็จ', (res&&res.error)||'กรุณาลองใหม่');
+    }
+  } catch(e) {
+    btn.disabled = false; btn.textContent = orig;
+    sw('error','ไม่สามารถเชื่อมต่อได้','กรุณาตรวจสอบอินเตอร์เน็ต');
+  }
+}
+
+/* ════════════════════════════════
+   MOOD / FORM
+   ════════════════════════════════ */
+var selectedMood = '';
 function pickMood(btn){
-  document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  document.querySelectorAll('.mood-btn').forEach(function(b){ b.classList.remove('selected'); });
   btn.classList.add('selected');
   selectedMood = btn.dataset.mood;
 }
 
-/* Char counter */
 function updateCount(){
   document.getElementById('charCount').textContent = document.getElementById('inputMessage').value.length;
 }
 
-/* Submit */
 async function submitFeedback(){
-  const message = document.getElementById('inputMessage').value.trim();
-  const subject = document.getElementById('inputSubject').value.trim();
+  var message = document.getElementById('inputMessage').value.trim();
+  var subject = getSubjectValue();
   if (!message){ sw('warning','โอ๊ะ!','กรุณาพิมพ์ความรู้สึกของคุณก่อนนะ 😊'); return; }
-  const btn = document.getElementById('btnSubmit');
+  var btn = document.getElementById('btnSubmit');
   btn.disabled = true; btn.textContent = '⏳ กำลังส่ง...';
   try {
-    const res = await apiGet({ action:'save', subject, mood:selectedMood, message });
+    var res = await apiGet({ action:'save', subject:subject, mood:selectedMood, message:message });
     btn.disabled = false; btn.textContent = '📩 ส่งความรู้สึก';
     if (res && res.success){
       await Swal.fire({ icon:'success', title:'ขอบคุณมากเลย! 🙏',
         text:'ครูได้รับความรู้สึกของคุณแล้ว จะนำไปปรับปรุงการสอนต่อไปนะ',
         background:'#fff', color:'#0f172a', confirmButtonColor:'#1d4ed8', confirmButtonText:'กลับหน้าแรก' });
       document.getElementById('inputMessage').value = '';
-      document.getElementById('inputSubject').value = '';
       document.getElementById('charCount').textContent = '0';
-      document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+      document.querySelectorAll('.mood-btn').forEach(function(b){ b.classList.remove('selected'); });
       selectedMood = '';
       go('screenHome');
     } else { sw('error','เกิดข้อผิดพลาด',(res&&res.error)||'กรุณาลองใหม่'); }
@@ -583,73 +654,146 @@ async function submitFeedback(){
   }
 }
 
-/* Admin */
+/* ════════════════════════════════
+   ADMIN
+   ════════════════════════════════ */
 function verifyAdmin(){
   if (document.getElementById('adminPwd').value.trim() === ADMIN_PWD){
     document.getElementById('adminPwd').value = '';
-    go('screenAdmin'); loadAll();
+    go('screenAdmin');
+    loadAll();
+    loadTopics(true);   /* load topics for admin panel */
   } else { sw('error','รหัสผ่านไม่ถูกต้อง','กรุณาลองใหม่อีกครั้ง'); }
 }
 
-let allFeedback = [];
 async function loadAll(){
   set('feedbackList', mkSpin('กำลังโหลดข้อมูล...'));
   set('statsBar',''); set('totalLabel','กำลังโหลด...');
   hide('aiResult'); hide('aiLoader');
   document.getElementById('filterMood').value = '';
   try {
-    const res = await apiGet({ action:'getFeedback' });
+    var res = await apiGet({ action:'getFeedback' });
     if (res && res.success){ allFeedback = res.data; renderStats(allFeedback); applyFilter(); }
     else { set('feedbackList', err2html((res&&res.error)||'ไม่ทราบสาเหตุ')); }
   } catch(e){ set('feedbackList', err2html('ไม่สามารถเชื่อมต่อ GAS ได้')); }
 }
 
 function applyFilter(){
-  const m = document.getElementById('filterMood').value;
-  renderFeedback(m ? allFeedback.filter(f => f.mood === m) : allFeedback);
+  var m = document.getElementById('filterMood').value;
+  renderFeedback(m ? allFeedback.filter(function(f){ return f.mood === m; }) : allFeedback);
 }
 
 function renderStats(data){
   document.getElementById('totalLabel').textContent = 'ข้อมูลทั้งหมด ' + data.length + ' รายการ';
   if (!data.length){ set('statsBar',''); return; }
-  const mc = {};
-  data.forEach(f => { if (f.mood) mc[f.mood] = (mc[f.mood]||0) + 1; });
-  const EM = { 'สนุกมาก':'😄','โอเค':'🙂','เฉยๆ':'😐','สับสน':'😕','เครียด':'😢' };
-  let h = '<span class="chip">📋 ' + data.length + ' รายการ</span>';
-  Object.entries(mc).sort((a,b) => b[1]-a[1]).forEach(([m,c]) => {
-    h += '<span class="chip">' + (EM[m]||'•') + ' ' + m + ': ' + c + '</span>';
+  var mc = {};
+  data.forEach(function(f){ if (f.mood) mc[f.mood] = (mc[f.mood]||0) + 1; });
+  var EM = { 'สนุกมาก':'😄','โอเค':'🙂','เฉยๆ':'😐','สับสน':'😕','เครียด':'😢' };
+  var h = '<span class="chip">📋 ' + data.length + ' รายการ</span>';
+  Object.entries(mc).sort(function(a,b){ return b[1]-a[1]; }).forEach(function(e){
+    h += '<span class="chip">' + (EM[e[0]]||'•') + ' ' + e[0] + ': ' + e[1] + '</span>';
   });
   set('statsBar', h);
 }
 
 function renderFeedback(data){
   if (!data.length){
-    set('feedbackList','<div style="text-align:center;padding:40px;color:#94a3b8;"><div style="font-size:2.5rem;">📭</div><p style="margin-top:12px;font-size:0.88rem;">ไม่มีข้อมูลในหมวดนี้</p></div>');
+    set('feedbackList',
+      '<div style="text-align:center;padding:40px;color:#94a3b8;">' +
+      '<div style="font-size:2.5rem;">📭</div>' +
+      '<p style="margin-top:12px;font-size:0.88rem;">ไม่มีข้อมูลในหมวดนี้</p></div>');
     return;
   }
-  const MC = {
+  var MC = {
     'สนุกมาก':{bg:'rgba(52,211,153,0.1)',bd:'#6ee7b7',em:'😄'},
     'โอเค'    :{bg:'rgba(163,230,53,0.1)',bd:'#bef264',em:'🙂'},
     'เฉยๆ'   :{bg:'rgba(251,191,36,0.1)',bd:'#fde68a',em:'😐'},
     'สับสน'   :{bg:'rgba(251,146,60,0.1)',bd:'#fed7aa',em:'😕'},
     'เครียด'  :{bg:'rgba(244,63,94,0.1)', bd:'#fecdd3',em:'😢'}
   };
-  set('feedbackList', data.map(f => {
-    const c = MC[f.mood]||{};
-    const mTag = f.mood
-      ? '<span class="tag" style="background:'+(c.bg||'#eff6ff')+';border:1px solid '+(c.bd||'#bfdbfe')+';color:#0f172a;">'+(c.em||'')+'&nbsp;'+esc(f.mood)+'</span>' : '';
-    const sTag = f.subject ? '<span class="tag tag-subj">📚 '+esc(f.subject)+'</span>' : '';
-    return '<div class="f-card"><div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:9px;"><div style="display:flex;gap:6px;flex-wrap:wrap;">'+mTag+sTag+'</div><span style="color:#94a3b8;font-size:0.72rem;white-space:nowrap;">'+esc(f.timestamp)+'</span></div><p style="color:#0f172a;font-size:0.92rem;line-height:1.65;margin:0;">'+esc(f.message)+'</p></div>';
+  set('feedbackList', data.map(function(f){
+    var c = MC[f.mood]||{};
+    var mTag = f.mood
+      ? '<span class="tag" style="background:'+(c.bg||'#eff6ff')+';border:1px solid '+(c.bd||'#bfdbfe')+';color:#0f172a;">'+(c.em||'')+'&nbsp;'+esc(f.mood)+'</span>'
+      : '';
+    var sTag = f.subject ? '<span class="tag tag-subj">📚 '+esc(f.subject)+'</span>' : '';
+    var tsSafe = String(f.timestamp||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+    return '<div class="f-card">' +
+      '<div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:6px;margin-bottom:9px;">' +
+        '<div style="display:flex;gap:6px;flex-wrap:wrap;">' + mTag + sTag + '</div>' +
+        '<div style="display:flex;align-items:center;gap:6px;flex-shrink:0;">' +
+          '<span style="color:#94a3b8;font-size:0.72rem;white-space:nowrap;">' + tsSafe + '</span>' +
+          '<button class="btn-del-fb" data-ts="' + tsSafe + '" onclick="handleFeedbackDelete(this)" title="ลบความคิดเห็นนี้">🗑️</button>' +
+        '</div>' +
+      '</div>' +
+      '<p style="color:#0f172a;font-size:0.92rem;line-height:1.65;margin:0;">' + esc(f.message) + '</p>' +
+    '</div>';
   }).join(''));
 }
 
+/* ════════════════════════════════
+   DELETE FEEDBACK
+   ════════════════════════════════ */
+function handleFeedbackDelete(btn) {
+  confirmDeleteFeedback(btn.getAttribute('data-ts'));
+}
+
+async function confirmDeleteFeedback(ts) {
+  var result = await Swal.fire({
+    title: '🗑️ ลบความคิดเห็นนี้?',
+    html: '<p style="color:#64748b;font-size:0.85rem;margin-bottom:12px;">ใส่รหัสลับเพื่อยืนยัน</p>' +
+          '<input id="swalDelPwd" type="password" class="swal2-input" placeholder="รหัสลับ" maxlength="10" ' +
+          'style="text-align:center;letter-spacing:6px;font-size:1.2rem;">',
+    showCancelButton: true,
+    confirmButtonText: 'ลบ',
+    cancelButtonText: 'ยกเลิก',
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6b7280',
+    background: '#fff', color: '#0f172a',
+    didOpen: function() {
+      setTimeout(function(){
+        var el = document.getElementById('swalDelPwd');
+        if (el) el.focus();
+      }, 80);
+    },
+    preConfirm: function() {
+      var pwd = (document.getElementById('swalDelPwd')||{}).value || '';
+      if (pwd !== DEL_PWD) {
+        Swal.showValidationMessage('❌ รหัสไม่ถูกต้อง');
+        return false;
+      }
+      return true;
+    }
+  });
+  if (!result.isConfirmed) return;
+
+  try {
+    var res = await apiGet({ action: 'deleteFeedback', timestamp: ts });
+    if (res && res.success) {
+      var idx = allFeedback.findIndex(function(f){ return f.timestamp === ts; });
+      if (idx !== -1) allFeedback.splice(idx, 1);
+      renderStats(allFeedback);
+      applyFilter();
+      Swal.fire({ toast:true, position:'top-end', icon:'success', title:'ลบแล้ว',
+        showConfirmButton:false, timer:1800, background:'#fff', color:'#0f172a' });
+    } else {
+      sw('error','ลบไม่สำเร็จ', (res&&res.error)||'กรุณาลองใหม่');
+    }
+  } catch(e) {
+    sw('error','เกิดข้อผิดพลาด','ไม่สามารถเชื่อมต่อได้');
+  }
+}
+
+/* ════════════════════════════════
+   AI SUMMARY
+   ════════════════════════════════ */
 async function requestAI(){
   if (!allFeedback.length){ sw('warning','ไม่มีข้อมูล','ยังไม่มีความรู้สึกนักเรียนเข้ามา'); return; }
   show('aiLoader'); hide('aiResult');
   document.getElementById('btnAI').disabled = true;
   document.getElementById('btnAI').textContent = '⏳ กำลังวิเคราะห์...';
   try {
-    const res = await apiGet({ action:'aiSummary' });
+    var res = await apiGet({ action:'aiSummary' });
     hide('aiLoader');
     document.getElementById('btnAI').disabled = false;
     document.getElementById('btnAI').textContent = '✨ วิเคราะห์ความรู้สึก';
@@ -663,6 +807,9 @@ async function requestAI(){
   }
 }
 
+/* ════════════════════════════════
+   HELPERS
+   ════════════════════════════════ */
 function esc(t){ return String(t||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\n/g,'<br>'); }
 function renderMD(t){ return String(t||'').replace(/\*\*(.*?)\*\*/g,'<strong style="color:#1d4ed8;">$1</strong>').replace(/\n/g,'<br>'); }
 function mkSpin(m){ return '<div style="text-align:center;padding:32px;color:#94a3b8;"><div class="spinner"></div><p style="margin-top:12px;font-size:0.88rem;">'+m+'</p></div>'; }
