@@ -903,14 +903,93 @@ function loadDocxLib(){
   });
 }
 
+/* ── เลือกหัวข้อ/วิชาที่จะส่งออก ──────────────────────────
+   แสดง modal ให้ติ๊กเลือกว่าจะรวมวิชา/หัวข้อไหนบ้างในไฟล์ Word
+   คืนค่าเป็น array ของหัวข้อที่เลือก, หรือ null ถ้ากดยกเลิก ───────── */
+function pickTopicsForExport(subjectsList){
+  return new Promise(function(resolve){
+    var rows = subjectsList.map(function(s){
+      var label = s === '' ? 'ไม่ระบุวิชา' : esc(s);
+      return '<label style="display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;text-align:left;">' +
+               '<input type="checkbox" class="topicExportChk" value="' + escAttr(s) + '" checked ' +
+                      'style="width:17px;height:17px;accent-color:#1d4ed8;flex-shrink:0;cursor:pointer;">' +
+               '<span style="font-size:0.9rem;color:#0f172a;">📚 ' + label + '</span>' +
+             '</label>';
+    }).join('');
+
+    Swal.fire({
+      title: '📚 เลือกหัวข้อที่จะส่งออก',
+      html:
+        '<p style="color:#64748b;font-size:0.82rem;margin:0 0 10px;text-align:left;">' +
+          'ติ๊กเลือกวิชา/หัวข้อที่ต้องการรวมในเอกสาร Word (ค่าเริ่มต้นเลือกไว้ทั้งหมด)' +
+        '</p>' +
+        '<div style="display:flex;gap:8px;margin-bottom:10px;">' +
+          '<button type="button" class="btn-ghost-dk" style="font-size:0.78rem;padding:6px 12px;" ' +
+                  'onclick="document.querySelectorAll(\'.topicExportChk\').forEach(function(c){c.checked=true;})">✅ เลือกทั้งหมด</button>' +
+          '<button type="button" class="btn-ghost-dk" style="font-size:0.78rem;padding:6px 12px;" ' +
+                  'onclick="document.querySelectorAll(\'.topicExportChk\').forEach(function(c){c.checked=false;})">◻️ ไม่เลือกเลย</button>' +
+        '</div>' +
+        '<div style="max-height:280px;overflow-y:auto;border:1px solid #dbeafe;border-radius:10px;padding:4px 6px;text-align:left;">' +
+          rows +
+        '</div>',
+      showCancelButton: true,
+      confirmButtonText: '📄 ส่งออกที่เลือก',
+      cancelButtonText: 'ยกเลิก',
+      confirmButtonColor: '#1d4ed8',
+      cancelButtonColor: '#6b7280',
+      background: '#fff', color: '#0f172a',
+      width: 440,
+      preConfirm: function(){
+        var checked = Array.from(document.querySelectorAll('.topicExportChk:checked')).map(function(c){ return c.value; });
+        if (!checked.length){
+          Swal.showValidationMessage('❌ กรุณาเลือกอย่างน้อย 1 หัวข้อ');
+          return false;
+        }
+        return checked;
+      }
+    }).then(function(result){
+      resolve(result.isConfirmed ? result.value : null);
+    });
+  });
+}
+
 async function exportToWord(){
   var m = document.getElementById('filterMood').value;
-  var dataToExport = m ? allFeedback.filter(function(f){ return f.mood === m; }) : allFeedback;
-  if (!dataToExport.length){ sw('warning','ไม่มีข้อมูล','ไม่มีความคิดเห็นให้ส่งออกในตอนนี้'); return; }
+  var moodFiltered = m ? allFeedback.filter(function(f){ return f.mood === m; }) : allFeedback;
+  if (!moodFiltered.length){ sw('warning','ไม่มีข้อมูล','ไม่มีความคิดเห็นให้ส่งออกในตอนนี้'); return; }
 
   var btn = document.getElementById('btnExportWord');
   var orig = btn.textContent;
-  btn.disabled = true; btn.textContent = '⏳ กำลังสร้างไฟล์...';
+  btn.disabled = true; btn.textContent = '⏳ กำลังเตรียมข้อมูล...'; // กันกดซ้ำไว้ตั้งแต่ก่อนเปิดหน้าต่างเลือกหัวข้อ
+
+  // รวบรวมรายชื่อวิชา/หัวข้อที่มีอยู่จริงในข้อมูลชุดนี้ ('' = ไม่ระบุวิชา)
+  var subjectsSet = {};
+  moodFiltered.forEach(function(f){ subjectsSet[(f.subject || '').trim()] = true; });
+  var subjectsList = Object.keys(subjectsSet).sort(function(a, b){
+    if (a === '') return 1;
+    if (b === '') return -1;
+    return a.localeCompare(b, 'th');
+  });
+
+  // ถ้ามีมากกว่า 1 วิชา/หัวข้อ ให้เลือกก่อนว่าจะส่งออกอันไหนบ้าง
+  // (ถ้ามีวิชาเดียวหรือไม่มีเลย ก็ไม่มีอะไรให้เลือก จะส่งออกทั้งหมดทันทีเหมือนเดิม)
+  var selectedSubjects = subjectsList;
+  if (subjectsList.length > 1) {
+    selectedSubjects = await pickTopicsForExport(subjectsList);
+    if (!selectedSubjects) { btn.disabled = false; btn.textContent = orig; return; } // ผู้ใช้กดยกเลิก
+  }
+
+  var selectedSet = {};
+  selectedSubjects.forEach(function(s){ selectedSet[s] = true; });
+  var dataToExport = moodFiltered.filter(function(f){ return selectedSet[(f.subject || '').trim()] === true; });
+
+  if (!dataToExport.length){
+    btn.disabled = false; btn.textContent = orig;
+    sw('warning','ไม่มีข้อมูล','ไม่มีความคิดเห็นตรงกับหัวข้อที่เลือก');
+    return;
+  }
+
+  btn.textContent = '⏳ กำลังสร้างไฟล์...';
 
   try {
     await loadDocxLib();
@@ -930,6 +1009,12 @@ async function exportToWord(){
     children.push(new D.Paragraph({
       children: [ new D.TextRun({ text: 'จำนวนทั้งหมด: ' + dataToExport.length + ' รายการ', bold: true }) ]
     }));
+    if (selectedSubjects.length !== subjectsList.length) {
+      var labelList = selectedSubjects.map(function(s){ return s === '' ? 'ไม่ระบุวิชา' : s; }).join(', ');
+      children.push(new D.Paragraph({
+        children: [ new D.TextRun({ text: 'หัวข้อที่เลือก: ' + labelList, italics: true, color: '64748B', size: 20 }) ]
+      }));
+    }
     children.push(new D.Paragraph({ text: '' }));
 
     dataToExport.forEach(function(f, idx){
