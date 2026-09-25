@@ -895,11 +895,25 @@ let docxLibLoaded = false;
 function loadDocxLib(){
   return new Promise(function(resolve, reject){
     if (docxLibLoaded && window.docx) { resolve(); return; }
-    var s = document.createElement('script');
-    s.src = 'https://unpkg.com/docx@8.5.0/build/index.js';
-    s.onload = function(){ docxLibLoaded = true; resolve(); };
-    s.onerror = function(){ reject(new Error('โหลดไลบรารี Word ไม่สำเร็จ ตรวจสอบอินเทอร์เน็ต')); };
-    document.head.appendChild(s);
+    // ไฟล์จริงในแพ็กเกจ docx@8.5.0 ชื่อ index.umd.js (ไม่ใช่ index.js — ของเดิมชี้ผิดไฟล์เลย 404 ตลอด)
+    // ลอง unpkg ก่อน ถ้าโหลดไม่ได้ (เช่น CDN ล่มหรือถูกบล็อก) สำรองด้วย jsDelivr
+    var sources = [
+      'https://unpkg.com/docx@8.5.0/build/index.umd.js',
+      'https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js'
+    ];
+    var i = 0;
+    function tryLoad(){
+      if (i >= sources.length) {
+        reject(new Error('โหลดไลบรารี Word ไม่สำเร็จ ตรวจสอบอินเทอร์เน็ต'));
+        return;
+      }
+      var s = document.createElement('script');
+      s.src = sources[i++];
+      s.onload = function(){ docxLibLoaded = true; resolve(); };
+      s.onerror = tryLoad;
+      document.head.appendChild(s);
+    }
+    tryLoad();
   });
 }
 
